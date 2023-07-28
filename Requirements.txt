@@ -1,1 +1,2 @@
-Dummy Text
+openai==0.27.5
+pandas
