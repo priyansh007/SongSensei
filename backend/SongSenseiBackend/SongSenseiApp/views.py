@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from .models import Text
 
 from songanalyzer.songanalyze import * 
+from django.http import HttpResponse
 
 # says that this function can do handle POST requests
 @api_view(["POST"])
@@ -28,4 +29,11 @@ def summarize_view(request):
 		
 		# return answer & status 200 (meaning everything worked!) 
 		return Response(text, status=200)
+	
+def webhook_handler(request):
+	# Process the webhook data here
+	# Your webhook processing logic...
+
+	# Return a response (optional)
+	return HttpResponse("Webhook received successfully!", status=200)
 		

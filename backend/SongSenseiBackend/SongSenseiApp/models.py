@@ -7,4 +7,5 @@ class Text(models.Model):
 	time_sent = models.DateTimeField(auto_now_add = True) 
 	
 class Song(models.Model):
+	song = models.CharField(max_length = 500, blank = False)
 	# put the type of data that would be sent from the frontend for a song
