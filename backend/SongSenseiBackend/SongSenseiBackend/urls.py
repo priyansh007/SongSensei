@@ -20,5 +20,5 @@ from SongSenseiApp.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('webhook/', webhook_handler, name='webhook_handler')
+    path('', webhook_handler, name='webhook_handler')
 ]
