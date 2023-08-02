@@ -4,7 +4,8 @@ import { Route, Switch } from 'wouter';
 import About from './pages/about';
 import Home from './pages/home';
 import Navbar from './components/navbar';
-import Summarize from './pages/summarize'; // import page
+import Team from './pages/team';
+import Search from './pages/search';
 import './App.css';
 
 function App () {
@@ -15,7 +16,8 @@ function App () {
                 <Route path='/' component={Home} />
                 <Route path='/about' component={About} />
 								{/* Set page to route */}
-                <Route path='/summarize' component={Summarize} />
+                <Route path='/team' component={Team} />
+                <Route path='/search' component={Search} />
             </Switch>
         </>
     );

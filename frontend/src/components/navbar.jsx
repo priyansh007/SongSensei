@@ -6,14 +6,15 @@ function Navbar() {
             <Link href="/" className="inline-block mr-5 hover:text-blue-400">
                 Home
             </Link>
-						{/* add "mr-5" class to /about link for spacing */}
             <Link href="/about" className="inline-block mr-5 hover:text-blue-400">
                 About
-            </Link>
-						{/* add summarize page link */}
-            <Link href="/summarize" className="inline-block hover:text-blue-400">
-                Summarize
-            </Link>
+            </Link>  
+            <Link href="/team" className="inline-block mr-5 hover:text-blue-400">
+                Team
+            </Link>  
+            <Link href="/search" className="inline-block mr-5 hover:text-blue-400">
+                Search
+            </Link>  
         </nav>
     );
 }
