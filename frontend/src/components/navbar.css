@@ -1,0 +1,40 @@
+/* navbar.css */
+
+/* Styles for the active link (blue filled-in button with white text) */
+.active {
+    background-color: blue;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none; /* Remove underline from active link */
+  }
+  
+  /* Other styles for the navbar links */
+.navbar a {
+    color: #333;
+    text-decoration: none;
+  }
+  
+  /* Styles for the navbar links on hover */
+.navbar a:hover {
+    color: blue;
+    text-decoration: underline; /* Add underline on hover */
+  }
+  
+  /* Additional styles for the navbar */
+.container {
+    /* Add your container styles here */
+  }
+  
+.navbar {
+    /* Add your navbar styles here */
+  }
+  
+.navbar ul {
+    /* Add your navbar list styles here */
+  }
+  
+.navbar li {
+    /* Add your navbar list item styles here */
+  }
+  
