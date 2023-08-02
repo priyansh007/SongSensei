@@ -1,8 +1,8 @@
-function Team() {
+function Search() {
     return (
         <h1 className="text-center text-xl font-bold text-slate-600 mt-20">
-						Team Page
+						Search Page
 				</h1>
     );
 }
-export default Team;
+export default Search;
