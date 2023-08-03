@@ -8,15 +8,33 @@ const handleLogin = () => {
   window.location.href = `https://accounts.spotify.com/authorize?client_id=${config.clientId}&response_type=code&redirect_uri=${encodeURIComponent(config.redirectUri)}`;
 };
 
+
 const SearchResults = ({ results }) => {
   // Create an object to hold the volume state for each track
   const [volumeState, setVolumeState] = useState({});
+  const [currentTrack, setCurrentTrack] = useState(null);
 
-  const playMusic = (previewUrl, trackId) => {
-    const audio = new Audio(previewUrl);
-    const volume = parseFloat(volumeState[trackId]) || 0.5; // Get the volume for the specific track, default to 0.5 if not set
-    audio.volume = volume;
-    audio.play();
+  useEffect(() => {
+    // Create a new audio element when a new track is played
+    if (currentTrack) {
+      const audio = new Audio(currentTrack.preview_url);
+      audio.volume = parseFloat(volumeState[currentTrack.id]) || 0.5;
+      audio.play();
+
+      // Pause the previous track when a new track is played
+      return () => {
+        audio.pause();
+      };
+    }
+  }, [currentTrack, volumeState]);
+
+  const playMusic = (track) => {
+    // Pause the current track if it's already playing
+    if (currentTrack && currentTrack.id === track.id) {
+      setCurrentTrack(null);
+    } else {
+      setCurrentTrack(track);
+    }
   };
 
   const handleVolumeChange = (trackId, newVolume) => {
@@ -41,9 +59,11 @@ const SearchResults = ({ results }) => {
               <div className="audio-controls">
                 <button
                   className="play-button"
-                  onClick={() => playMusic(track.preview_url, track.id)}
+                  onClick={() => playMusic(track)}
                 >
-                  Play
+                  {currentTrack && currentTrack.id === track.id
+                    ? 'Pause'
+                    : 'Play'}
                 </button>
                 <input
                   type="range"
@@ -64,7 +84,6 @@ const SearchResults = ({ results }) => {
   );
 };
 
-  
 
 const SpotifySearch = () => {
   const [searchQuery, setSearchQuery] = useState('');
