@@ -1,6 +1,6 @@
 function About() {
     return (
-        <><div className="flex flex-col items-center justify-center h-screen">
+        <><div className="flex flex-col items-center justify-center mt-40">
             <div className="text-center max-w-3xl">
                 <h1 className="text-7xl font-bold text-black mb-8">
                     Find New Music That Fits Your Taste
@@ -10,7 +10,7 @@ function About() {
                 </h2>
             </div>
         </div>
-        <div class="container mx-auto py-8">
+        <div class="container mx-auto py-8 mt-40">
             <div class="grid grid-cols-3 gap-4 justify-center">
                 <div class="bg-gray-200 p-4 h-64">
                     <h1 className="text-2xl font-bold text-black mb-8">
