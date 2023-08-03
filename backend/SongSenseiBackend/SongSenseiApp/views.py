@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
 
@@ -11,6 +11,9 @@ from songanalyzer.songanalyze import *
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+
+#import forms
+from .forms import MP3FileForm
 
 #import cyanite
 
@@ -51,3 +54,13 @@ def webhook_handler(request):
 #def GraphQLView(request):
 #	Query.resolve_get_music_recommendations()
 
+@csrf_exempt
+def upload_mp3(request):
+	if request.method == 'POST':
+		form = MP3FileForm(request.POST, request.FILES)
+		if form.is_valid():
+			form.save()
+			return redirect('success')  # Replace 'success' with the URL name of the success page
+	else:
+		form = MP3FileForm()
+	return render(request, 'upload_mp3.html', {'form': form})
