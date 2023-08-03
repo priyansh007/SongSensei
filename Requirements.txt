@@ -1,4 +1,5 @@
 openai==0.27.5
 django
 djangorestframework
-cyanite-api-client
+requests
+dotenv-python
