@@ -1,8 +1,13 @@
-.search-results {
-    max-width: 600px;
+  .search-results {
+    max-width: 800px;
     margin: 0 auto;
   }
-  
+
+  .text-xl {
+    font-size: 10rem;
+    font-family: 'Montserrat', sans-serif;
+  }
+
   .track-box {
     display: flex;
     align-items: center;
@@ -86,4 +91,8 @@
   .play-button:hover {
     background-color: #1ed760;
   }
-  
+
+  input[type="text"] {
+    font-size: 2rem;
+    padding: 1rem 1.5rem;
+  }
