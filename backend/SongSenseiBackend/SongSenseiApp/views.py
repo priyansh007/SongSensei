@@ -59,8 +59,14 @@ def upload_mp3(request):
 	if request.method == 'POST':
 		form = MP3FileForm(request.POST, request.FILES)
 		if form.is_valid():
-			form.save()
-			return redirect('success')  # Replace 'success' with the URL name of the success page
+
+			#saving the mp3file object (model)
+			mp3file_obj = form.save()
+			print(mp3file_obj.name)
+			print(str(mp3file_obj))
+			mp3name = str(mp3file_obj)
+
+			return HttpResponse('form recieved successfully!', status=200)
 	else:
 		form = MP3FileForm()
 	return render(request, 'upload_mp3.html', {'form': form})
