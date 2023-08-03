@@ -41,9 +41,10 @@ const styles = {
         background-color: #003049; /* Darker color when hovered */
       }
     }
-  `,
-  activeLink: css`
-    background-color: #003049; /* Darker color for active link */
+    & .activeLink {
+      /* Styles for the active link */
+      background-color: #003049; /* Darker color for active link */
+    }
   `,
 };
 
@@ -51,7 +52,7 @@ function Navbar() {
   const [location] = useLocation();
 
   const isActive = (href) => {
-    return href === location ? styles.activeLink : "";
+    return href === location ? "activeLink" : "";
   };
 
   return (
