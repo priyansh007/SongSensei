@@ -1,30 +1,31 @@
-import homepic from "../images/home_image.png";
-import { Link } from "wouter";
+import React from "react";
 
 function Home() {
   return (
-    <div className="flex justify-center mt-20">
-      <div className="flex-1 m-20 flex flex-col justify-center">
-        <h1 className="text-7xl font-bold text-black">
-          Find New Music For Your Next Playlist
-        </h1>
-        <h2 className="text-3xl text-gray-700 mt-10">
-          Input any song from your files or through Spotify and SongSensei will analyze and recommend new songs just for you
-        </h2>
-        <div className="mt-6 flex">
-          <Link href="/search">
-            <button style={{ backgroundColor: "rgb(0, 148, 255)" }} className="py-3 px-6 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-colors">
-              Try it out!
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="my-container container mx-auto py-5002"> {/* Adjust the py-130 value */}
+        <div className="flex flex-col md:flex-row items-center">
+          {/* Text Section */}
+          <div className="md:w-1/2 p-4">
+            <h1 className="text-4xl font-bold mb-4">Find New Music For Your Next Playlist</h1>
+            <p className="text-gray-700 mb-4">
+            Input any song from Spotify and SongSensei will analyze and recommend new songs just for you
+            </p>
+            {/* Button */}
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+              Learn More
             </button>
-          </Link>
+          </div>
+
+          {/* Image Section */}
+          <div className="md:w-1/2 p-4">
+            <img
+              src="src/download.jpg" // The image path inside the public folder
+              alt="Home Page Image"
+              className="w-full h-auto rounded-lg"
+            />
+          </div>
         </div>
-      </div>
-      <div className="flex-1 m-20">
-        <img
-          src={homepic}
-          alt="Image"
-          className="max-h-1/2 max-w-1/2"
-        />
       </div>
     </div>
   );
