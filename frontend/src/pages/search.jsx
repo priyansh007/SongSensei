@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'wouter';
 import axios from 'axios';
 import config from './config';
@@ -8,28 +8,33 @@ const handleLogin = () => {
   window.location.href = `https://accounts.spotify.com/authorize?client_id=${config.clientId}&response_type=code&redirect_uri=${encodeURIComponent(config.redirectUri)}`;
 };
 
-
 const SearchResults = ({ results }) => {
-  // Create an object to hold the volume state for each track
-  const [volumeState, setVolumeState] = useState({});
   const [currentTrack, setCurrentTrack] = useState(null);
+  const [volume, setVolume] = useState(0.5);
+  const audioRef = useRef(new Audio());
 
   useEffect(() => {
-    // Create a new audio element when a new track is played
     if (currentTrack) {
-      const audio = new Audio(currentTrack.preview_url);
-      audio.volume = parseFloat(volumeState[currentTrack.id]) || 0.5;
-      audio.play();
-
-      // Pause the previous track when a new track is played
-      return () => {
-        audio.pause();
-      };
+      audioRef.current.pause();
+      audioRef.current.src = currentTrack.preview_url;
+      audioRef.current.load();
+      audioRef.current.play();
+    } else {
+      audioRef.current.pause();
     }
-  }, [currentTrack, volumeState]);
+
+    return () => {
+      audioRef.current.pause();
+    };
+  }, [currentTrack]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume; // Update the volume of the audio element
+    }
+  }, [volume]);
 
   const playMusic = (track) => {
-    // Pause the current track if it's already playing
     if (currentTrack && currentTrack.id === track.id) {
       setCurrentTrack(null);
     } else {
@@ -37,16 +42,23 @@ const SearchResults = ({ results }) => {
     }
   };
 
-  const handleVolumeChange = (trackId, newVolume) => {
-    // Update the volume state for the specific track
-    setVolumeState((prevState) => ({
-      ...prevState,
-      [trackId]: newVolume,
-    }));
+  const handleVolumeChange = (newVolume) => {
+    setVolume(parseFloat(newVolume)); // Update the volume state
   };
 
   return (
     <div className="search-results">
+      <div className="volume-controls">
+        <label>Volume:</label>
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          value={volume}
+          onChange={(e) => handleVolumeChange(e.target.value)}
+        />
+      </div>
       <h2>Search Results:</h2>
       <ul>
         {results.map((track) => (
@@ -61,18 +73,8 @@ const SearchResults = ({ results }) => {
                   className="play-button"
                   onClick={() => playMusic(track)}
                 >
-                  {currentTrack && currentTrack.id === track.id
-                    ? 'Pause'
-                    : 'Play'}
+                  {currentTrack && currentTrack.id === track.id ? 'Pause' : 'Play'}
                 </button>
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                  value={volumeState[track.id] || 0.5} // Get the volume for the specific track, default to 0.5 if not set
-                  onChange={(e) => handleVolumeChange(track.id, e.target.value)}
-                />
               </div>
             ) : (
               <p>No preview available for this track.</p>
@@ -83,7 +85,6 @@ const SearchResults = ({ results }) => {
     </div>
   );
 };
-
 
 const SpotifySearch = () => {
   const [searchQuery, setSearchQuery] = useState('');
