@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "wouter";
 import { css, keyframes } from "@emotion/css";
+import logo from "../images/songsenseilogoimage.png";
 
 const styles = {
   header: css`
@@ -17,11 +18,17 @@ const styles = {
     font-weight: 600; /* Use font weight 600 for a bold look */
   `,
   pageTitle: css`
-    flex: 1; /* Grow to fill remaining space */
-    margin-right: 10px; /* Adjust the margin to create a gap */
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* Use a modern sans-serif font */
-    font-size: 40px; /* Increase font size for the page title */
-    font-weight: 700; /* Use font weight 700 for a bolder look */
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 40px;
+    font-weight: 700;
+    & > img {
+      width: auto; // This will maintain the aspect ratio of the image
+      height: 40px; // Set the maximum height of the image to 40px (same as the "Song Sensei" text)
+      margin-right: 10px;
+    }
   `,
   navbar: css`
     font-family: Arial, sans-serif; /* Use a fallback font stack */
@@ -57,7 +64,10 @@ function Navbar() {
 
   return (
     <header className={styles.header}>
-      <div className={styles.pageTitle}>Song Sensei</div>
+      <div className={styles.pageTitle}>
+        <img src={logo} alt="Logo"/>
+        Song Sensei
+      </div>
       <nav className={styles.navbar}>
         <Link href="/" className={`${styles.navLink} ${isActive("/")}`}>
           Home
