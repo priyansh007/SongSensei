@@ -16,7 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from SongSenseiApp.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('incoming-webhook/', webhook_handler, name='webhook_handler'),
+    path('', webhook_handler, name='webhook_handler'),
+    path('upload/', upload_mp3, name='upload_mp3')
 ]

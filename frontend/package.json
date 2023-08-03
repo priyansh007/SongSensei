@@ -11,7 +11,11 @@
   },
   "dependencies": {
     "@emotion/css": "^11.11.2",
+<<<<<<< HEAD
     "axios": "^1.4.0",
+=======
+    "@emotion/react": "^11.11.1",
+>>>>>>> 51f105127130d0f17ea0c88090d7d209e0357f21
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "wouter": "^2.11.0"
