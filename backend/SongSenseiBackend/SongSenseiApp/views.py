@@ -7,13 +7,16 @@ from rest_framework.response import Response
 
 from .models import Text
 
-from songanalyzer.songanalyze import * 
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 #import forms
 from .forms import MP3FileForm
+
+import requests
+from songanalyzer.requestupload import *
+from songanalyzer.uploadfile import *
 
 #import cyanite
 
@@ -63,8 +66,16 @@ def upload_mp3(request):
 			#saving the mp3file object (model)
 			mp3file_obj = form.save()
 			print(mp3file_obj.name)
-			print(str(mp3file_obj))
-			mp3name = str(mp3file_obj)
+
+			#send graph_ql request
+			graphql_request_data = send_graphql_request()
+
+			#upload file to library
+			upload_url = graphql_request_data['uploadUrl']
+			id = graphql_request_data['id']
+			upload_file(upload_url, mp3file_obj.mp3_file)
+		
+			#retrieve file from library
 
 			return HttpResponse('form recieved successfully!', status=200)
 	else:

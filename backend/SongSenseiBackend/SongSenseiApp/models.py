@@ -12,7 +12,7 @@ class Song(models.Model):
 
 class MP3File(models.Model):
 	name = models.CharField(max_length=255)
-	mp3_file = models.BinaryField()
+	mp3_file = models.FileField(upload_to='mp3_files/')
 	upload_date = models.DateTimeField(auto_now_add=True)
 
 	def __str__(self):
