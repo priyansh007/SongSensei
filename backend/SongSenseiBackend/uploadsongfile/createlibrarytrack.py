@@ -2,7 +2,9 @@ import requests
 
 import json
 
-CYANITE_API_KEY = 'key'
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
+CYANITE_API_KEY = os.environ.get('CYANITE_ACCESS_TOKEN')
 
 def create_library_track(upload_id, name):
     url = 'https://api.cyanite.ai/graphql'  # Replace this with the actual GraphQL API endpoint

@@ -1,6 +1,8 @@
 import requests
 
-CYANITE_API_KEY = 'key'
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
+CYANITE_API_KEY = os.environ.get('CYANITE_ACCESS_TOKEN')
 
 def send_graphql_request():
     url = "https://api.cyanite.ai/graphql"
