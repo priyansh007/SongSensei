@@ -15,8 +15,9 @@ from django.views.decorators.csrf import csrf_exempt
 from .forms import MP3FileForm
 
 import requests
-from songanalyzer.requestupload import *
-from songanalyzer.uploadfile import *
+from uploadsongfile.requestupload import *
+from uploadsongfile.uploadfile import *
+from uploadsongfile.createlibrarytrack import *
 
 #import cyanite
 
@@ -75,7 +76,8 @@ def upload_mp3(request):
 			id = graphql_request_data['id']
 			upload_file(upload_url, mp3file_obj.mp3_file)
 		
-			#retrieve file from library
+			#create library track
+			create_library_track(id, mp3file_obj.name)
 
 			return HttpResponse('form recieved successfully!', status=200)
 	else:
