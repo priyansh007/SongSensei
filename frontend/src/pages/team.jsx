@@ -15,7 +15,6 @@ function Team() {
         </div>
       </div>
       <div className="container mx-auto py-1" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-        {/* Row 1 */}
         <div style={{ display: "flex", justifyContent: "center", paddingBottom: "64px"}}>
           <div className="bg-white border border-gray-300 shadow-md p-1 rounded-lg mx-4 flex flex-col justify-center items-center" style={{ width: "356px", height: "123px" }}>
             <h2 className="text-2xl font-semibold mb-2" style={{ fontSize: "32px", fontFamily: "Inter, sans-serif", color: "#EA6656", fontWeight: "700" }}>Joshua Zhang</h2>
