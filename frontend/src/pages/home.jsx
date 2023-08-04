@@ -1,9 +1,5 @@
 import React from "react";
-<<<<<<< HEAD
 import { Link } from "wouter"; // Import the Link component
-=======
-import { Link } from 'wouter';
->>>>>>> c1084c4bde6c3f7dd9fd216b1e6ca6c67deaae98
 
 function Home() {
   return (
@@ -19,17 +15,9 @@ function Home() {
               Input any song from Spotify and SongSensei will analyze and recommend new songs just for you
             </p>
             {/* Button */}
-<<<<<<< HEAD
-            <Link to="/about"> {/* Use the Link component with the path of the About page */}
-              <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
-                Learn More
-              </button>
-            </Link>
-=======
             <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
             <Link href="/search">Try it out</Link>
             </button>
->>>>>>> c1084c4bde6c3f7dd9fd216b1e6ca6c67deaae98
           </div>
 
           {/* Image Section */}
