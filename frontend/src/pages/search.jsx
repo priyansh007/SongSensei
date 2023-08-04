@@ -50,12 +50,24 @@ const SearchResults = ({ results, handleTrackSelect, sendTrackToBackend }) => {
   };
 
   const handleSelectTrack = (trackId) => {
-    handleTrackSelect(trackId); // Pass the selected track ID to the parent component
+    handleTrackSelect(trackId);
+    sendTrackToBackend(trackId); // Call the sendTrackToBackend function with the track ID
   };
 
   return (
     <div className="search-results">
-      {/* ... (existing JSX) */}
+      <div className="volume-controls">
+        <label>Volume:</label>
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          value={volume}
+          onChange={(e) => handleVolumeChange(e.target.value)}
+        />
+      </div>
+      <h2>Search Results:</h2>
       <ul>
         {results.map((track) => (
           <li key={track.id} className="track-box">
@@ -65,16 +77,19 @@ const SearchResults = ({ results, handleTrackSelect, sendTrackToBackend }) => {
             </div>
             {track.preview_url ? (
               <div className="audio-controls">
-                {/* ... (existing JSX) */}
-                <button
-                  className="send-button"
-                  onClick={() => sendTrackToBackend(track.id)} // Add this button and call sendTrackToBackend with the track ID
-                >
-                  Send to Backend
+                <button className="play-button" onClick={() => playMusic(track)}>
+                  {currentTrack && currentTrack.id === track.id ? 'Pause' : 'Play'}
+                </button>
+                <button className="select-button" onClick={() => handleSelectTrack(track.id)}>
+                  Select
                 </button>
               </div>
             ) : (
-              <p>No preview available for this track.</p>
+              <div className="audio-controls">
+                <button className="select-button" onClick={() => handleSelectTrack(track.id)}>
+                  Select
+                </button>
+              </div>
             )}
           </li>
         ))}
@@ -163,10 +178,15 @@ const SpotifySearch = () => {
     );
   };
 
+  const handleSelectTrack = async (trackId) => {
+    // Add the logic to handle the selected track
+    console.log('Selected track ID:', trackId);
+  };
+
   const sendTrackToBackend = async (trackId) => {
     try {
       // Make an HTTP POST request to your backend with the selected track ID
-      await axios.post('http://localhost:8000/spotify', { trackId });
+      await axios.post('http://localhost:8000/track', { trackId });
       console.log('Track ID sent to backend:', trackId);
     } catch (error) {
       console.error('Error sending track ID to backend:', error);

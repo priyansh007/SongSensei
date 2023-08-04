@@ -22,5 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('incoming-webhook/', webhook_handler, name='webhook_handler'),
     path('', webhook_handler, name='webhook_handler'),
-    path('upload/', upload_mp3, name='upload_mp3')
+    path('upload/', upload_mp3, name='upload_mp3'),
+    path('track/', track_view, name='track_view')
 ]

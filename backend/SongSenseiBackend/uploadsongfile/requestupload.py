@@ -1,9 +1,5 @@
 import requests
 import os
-<<<<<<< HEAD
-=======
-
->>>>>>> 259a915b4e289ecd1f722f8fe6b94e6e957141b1
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 CYANITE_API_KEY = os.environ.get('CYANITE_ACCESS_TOKEN')

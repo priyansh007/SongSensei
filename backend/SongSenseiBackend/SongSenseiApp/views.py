@@ -61,17 +61,18 @@ def webhook_handler(request):
 #	Query.resolve_get_music_recommendations()
 def track_view(request):
     if request.method == 'POST':
-        # Get the track ID from the request data
-        track_id = request.POST.get('trackId')
-
-        # Process the track ID as needed (e.g., save it to the database)
-        # Add your logic here...
-
-        # Send a JSON response indicating success
-        return JsonResponse({'message': 'Track ID received successfully.'})
+        try:
+            track_id = request.POST.get('trackId')  # 'trackId' is the key used to send the track ID from the frontend
+            print(f"Received track ID from frontend: {track_id}")
+            # You can now do whatever you want with the track ID, such as saving it to your database or performing other operations.
+            
+            # Return a success response to the frontend
+            return JsonResponse({'message': 'Track ID received successfully.'})
+        except Exception as e:
+            print(f"Error processing track ID: {str(e)}")
+            return JsonResponse({'error': 'Failed to process track ID.'}, status=500)
     
-    # Return a JSON response with an error message if the request is not POST
-    return JsonResponse({'error': 'Invalid request method.'}, status=400)
+    return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
 @csrf_exempt
 def upload_mp3(request):
@@ -106,3 +107,4 @@ def upload_mp3(request):
 	else:
 		form = MP3FileForm()
 	return render(request, 'upload_mp3.html', {'form': form})
+
