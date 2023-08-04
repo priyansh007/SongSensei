@@ -11,7 +11,7 @@ const handleLogin = () => {
   )}&scope=user-library-read`;
 };
 
-const SearchResults = ({ results }) => {
+const SearchResults = ({ results, handleTrackSelect, sendTrackToBackend }) => {
   const [currentTrack, setCurrentTrack] = useState(null);
   const [volume, setVolume] = useState(0.5);
   const audioRef = useRef(new Audio());
@@ -49,20 +49,13 @@ const SearchResults = ({ results }) => {
     setVolume(parseFloat(newVolume)); // Update the volume state
   };
 
+  const handleSelectTrack = (trackId) => {
+    handleTrackSelect(trackId); // Pass the selected track ID to the parent component
+  };
+
   return (
     <div className="search-results">
-      <div className="volume-controls">
-        <label>Volume:</label>
-        <input
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          value={volume}
-          onChange={(e) => handleVolumeChange(e.target.value)}
-        />
-      </div>
-      <h2>Search Results:</h2>
+      {/* ... (existing JSX) */}
       <ul>
         {results.map((track) => (
           <li key={track.id} className="track-box">
@@ -72,11 +65,12 @@ const SearchResults = ({ results }) => {
             </div>
             {track.preview_url ? (
               <div className="audio-controls">
+                {/* ... (existing JSX) */}
                 <button
-                  className="play-button"
-                  onClick={() => playMusic(track)}
+                  className="send-button"
+                  onClick={() => sendTrackToBackend(track.id)} // Add this button and call sendTrackToBackend with the track ID
                 >
-                  {currentTrack && currentTrack.id === track.id ? 'Pause' : 'Play'}
+                  Send to Backend
                 </button>
               </div>
             ) : (
@@ -168,6 +162,17 @@ const SpotifySearch = () => {
       '_blank'
     );
   };
+
+  const sendTrackToBackend = async (trackId) => {
+    try {
+      // Make an HTTP POST request to your backend with the selected track ID
+      await axios.post('http://localhost:8000/spotify', { trackId });
+      console.log('Track ID sent to backend:', trackId);
+    } catch (error) {
+      console.error('Error sending track ID to backend:', error);
+    }
+  };
+
   return (
     <div className="text-center mt-20">
       <h1 className="text-4xl font-bold text-slate-600 font-montserrat">
@@ -188,7 +193,11 @@ const SpotifySearch = () => {
           <p>Loading...</p>
         ) : hasSearched ? (
           searchResults.length > 0 ? (
-            <SearchResults results={searchResults} />
+            <SearchResults
+              results={searchResults}
+              handleTrackSelect={handleSelectTrack}
+              sendTrackToBackend={sendTrackToBackend} // Pass the callback function to the child component
+            />
           ) : (
             <p>{accessToken ? "No results found." : "Please log in first."}</p>
           )
@@ -214,7 +223,6 @@ const SpotifySearch = () => {
       </div>
     </div>
   );
-  
 };
 
 export default SpotifySearch;

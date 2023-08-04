@@ -58,6 +58,19 @@ def webhook_handler(request):
 
 #def GraphQLView(request):
 #	Query.resolve_get_music_recommendations()
+def track_view(request):
+    if request.method == 'POST':
+        # Get the track ID from the request data
+        track_id = request.POST.get('trackId')
+
+        # Process the track ID as needed (e.g., save it to the database)
+        # Add your logic here...
+
+        # Send a JSON response indicating success
+        return JsonResponse({'message': 'Track ID received successfully.'})
+    
+    # Return a JSON response with an error message if the request is not POST
+    return JsonResponse({'error': 'Invalid request method.'}, status=400)
 
 @csrf_exempt
 def upload_mp3(request):
