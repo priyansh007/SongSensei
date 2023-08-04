@@ -8,16 +8,18 @@ function Home() {
         <div className="flex flex-col md:flex-row items-center">
           {/* Text Section */}
           <div className="md:w-1/2 p-4">
-            <h1 className="text-4xl font-bold mb-4">
-              Find New Music For Your Next Playlist
-            </h1>
-            <p className="text-gray-700 mb-4">
-              Input any song from Spotify and SongSensei will analyze and recommend new songs just for you
-            </p>
-            {/* Button */}
-            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
-            <Link href="/search">Try it out</Link>
-            </button>
+            <div className="p-1 mx-4 flex flex-col" style={{ width: "480px", height: "300px" }}>
+              <h1 className="font-bold" style={{ fontFamily: "Inter", fontWeight: 700, fontSize: "48px", color: "#000000", marginBottom: "24px" }}>
+                Find New Music For Your Next Playlist
+              </h1>
+              <p className="font-bold" style={{ fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "#0A2A42", marginBottom: "24px" }}>
+                Input any song from Spotify and SongSensei will analyze and recommend new songs just for you
+              </p>
+              {/* Button */}
+              <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+              <Link href="/search">Try it out</Link>
+              </button>
+            </div>
           </div>
 
           {/* Image Section */}
