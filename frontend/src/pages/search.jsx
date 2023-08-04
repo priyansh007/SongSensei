@@ -5,10 +5,10 @@ import config from './config';
 import './search.css'; // Import CSS file for styling
 
 const handleLogin = () => {
-  window.open(
-    `https://accounts.spotify.com/authorize?client_id=${config.clientId}&response_type=code&redirect_uri=${encodeURIComponent(config.redirectUri)}`,
-    '_blank' // Open in a new tab
-  );
+  setHasSearched(false); // Reset hasSearched state to false when the user clicks "Login with Spotify"
+  window.location.href = `https://accounts.spotify.com/authorize?client_id=${config.clientId}&response_type=token&redirect_uri=${encodeURIComponent(
+    config.redirectUri
+  )}&scope=user-library-read`;
 };
 
 const SearchResults = ({ results }) => {
@@ -90,11 +90,11 @@ const SearchResults = ({ results }) => {
 };
 
 const SpotifySearch = () => {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [accessToken, setAccessToken] = useState('');
-    const [hasSearched, setHasSearched] = useState(false); // New state for tracking if user has searched
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [accessToken, setAccessToken] = useState('');
+  const [hasSearched, setHasSearched] = useState(false);
 
   useEffect(() => {
     // Check if the URL has the authorization code
@@ -118,6 +118,7 @@ const SpotifySearch = () => {
 
       const accessToken = response.data.access_token;
       setAccessToken(accessToken); // Save the access token in state
+      setHasSearched(false); // Reset hasSearched state to false to clear previous search results
     } catch (error) {
       console.error('Error fetching access token:', error);
     }
@@ -125,10 +126,16 @@ const SpotifySearch = () => {
 
   const handleSearchQuery = async () => {
     try {
-      setLoading(true); // Set loading state to true while fetching data
+      setLoading(true);
       const searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(
         searchQuery
       )}&type=track`;
+
+      // Ensure that accessToken is not empty or undefined before making the request
+      if (!accessToken) {
+        setSearchResults([]); // Clear previous search results
+        throw new Error('Please log in first');
+      }
 
       const response = await axios.get(searchUrl, {
         headers: {
@@ -139,10 +146,10 @@ const SpotifySearch = () => {
       setSearchResults(response.data.tracks.items);
     } catch (error) {
       console.error('Error fetching data from Spotify:', error);
-      setSearchResults([]); // Set an empty array to indicate no results found
+      setSearchResults([]);
     } finally {
-      setLoading(false); // Set loading state back to false after fetching data
-      setHasSearched(true); // Update the state to indicate that the user has searched
+      setLoading(false);
+      setHasSearched(true);
     }
   };
 
@@ -152,6 +159,15 @@ const SpotifySearch = () => {
     }
   };
 
+  const handleLogin = () => {
+    setHasSearched(false); // Reset hasSearched state to false when the user clicks "Login with Spotify"
+    window.open(
+      `https://accounts.spotify.com/authorize?client_id=${config.clientId}&response_type=code&redirect_uri=${encodeURIComponent(
+        config.redirectUri
+      )}&scope=user-library-read`,
+      '_blank'
+    );
+  };
   return (
     <div className="text-center mt-20">
       <h1 className="text-4xl font-bold text-slate-600 font-montserrat">
@@ -174,7 +190,7 @@ const SpotifySearch = () => {
           searchResults.length > 0 ? (
             <SearchResults results={searchResults} />
           ) : (
-            <p>No results found.</p>
+            <p>{accessToken ? "No results found." : "Please log in first."}</p>
           )
         ) : null}
       </div>
@@ -198,7 +214,7 @@ const SpotifySearch = () => {
       </div>
     </div>
   );
+  
 };
-
 
 export default SpotifySearch;
