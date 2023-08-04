@@ -1,11 +1,12 @@
 import requests
-
+import os
 import json
 
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 CYANITE_API_KEY = os.environ.get('CYANITE_ACCESS_TOKEN')
 
+# THIS FUNCTION RETURNS THE TRACK ID OF THE TRACK THAT IT CREATES
 def create_library_track(upload_id, name):
     url = 'https://api.cyanite.ai/graphql'  # Replace this with the actual GraphQL API endpoint
     headers = {'Content-Type': 'application/json',
@@ -46,12 +47,16 @@ def create_library_track(upload_id, name):
         if 'errors' in data:
             # Handle any errors
             print("GraphQL Error:", data['errors'])
+            return 'GraphQL Error'
         else:
             # Handle the success response
+            print(data)
             created_track_id = data['data']['libraryTrackCreate']['createdLibraryTrack']['id']
             print(f"Successfully created LibraryTrack with ID: {created_track_id}")
+            return created_track_id
     else:
         print("Error:", response.status_code, response.text)
+        return 'Error'
 
 # Usage example
 #create_library_track("My Song", "My Artist", "My Album", 240, "https://example.com/song.mp3")
