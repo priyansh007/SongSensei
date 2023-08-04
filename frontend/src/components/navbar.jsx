@@ -81,6 +81,9 @@ function Navbar() {
         <Link href="/search" className={`${styles.navLink} ${isActive("/search")}`}>
           Search
         </Link>
+        <Link href="/input" className={`${styles.navLink} ${isActive("/input")}`}>
+          File Input
+        </Link>
       </nav>
     </header>
   );
