@@ -21,7 +21,7 @@ function Home() {
           {/* Image Section */}
           <div className="md:w-1/2 p-4">
             <img
-              src="src/download.jpg" // The image path inside the public folder
+              src="src/images/download.jpg" // The image path inside the public folder
               alt="Home Page Image"
               className="w-full h-auto rounded-lg"
             />
