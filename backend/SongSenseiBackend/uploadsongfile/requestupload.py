@@ -1,10 +1,15 @@
 import requests
 import os
+<<<<<<< HEAD
+=======
+
+>>>>>>> 259a915b4e289ecd1f722f8fe6b94e6e957141b1
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 CYANITE_API_KEY = os.environ.get('CYANITE_ACCESS_TOKEN')
 
-def send_graphql_request():
+#returns json response data in a dictionary
+def request_upload():
     url = "https://api.cyanite.ai/graphql"
     headers = {
         "Content-Type": "application/json",
@@ -34,6 +39,7 @@ def send_graphql_request():
         return data['data']['fileUploadRequest'] # returns a dictionary with 'id' and 'uploadUrl'
     else:
         print("Failed to send the GraphQL request. Status code:", response.status_code)
+        return 'Failed to send the GraphQL request.'
 
 
 #{'data': 

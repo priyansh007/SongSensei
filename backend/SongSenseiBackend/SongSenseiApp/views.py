@@ -19,6 +19,7 @@ import requests
 from uploadsongfile.requestupload import *
 from uploadsongfile.uploadfile import *
 from uploadsongfile.createlibrarytrack import *
+from retrievesimilarsongs.librarysimilarsongs import *
 
 #import cyanite
 
@@ -83,17 +84,24 @@ def upload_mp3(request):
 			print(mp3file_obj.name)
 
 			#send graph_ql request
-			graphql_request_data = send_graphql_request()
+			upload_request_data = request_upload()
 
 			#upload file to library
-			upload_url = graphql_request_data['uploadUrl']
-			id = graphql_request_data['id']
+			upload_url = upload_request_data['uploadUrl']
+			upload_id = upload_request_data['id']
 			upload_file(upload_url, mp3file_obj.mp3_file)
 		
 			#create library track
-			create_library_track(id, mp3file_obj.name)
+			library_track_id = create_library_track(upload_id, mp3file_obj.name)
 
+			#request similar songs (NEED TO WAIT UNTIL SONG IS ANALYZED)
+			library_track_id = '15029843'
+			similar_songs_data = request_similar_from_library(library_track_id)
 
+			#turn raw data into spotify links
+			spotify_links = raw_data_to_spotifylink(similar_songs_data)
+
+			return HttpResponse(spotify_links, status=200)
 			return HttpResponse('form recieved successfully!', status=200)
 	else:
 		form = MP3FileForm()
