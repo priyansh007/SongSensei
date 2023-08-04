@@ -59,6 +59,20 @@ def webhook_handler(request):
 
 #def GraphQLView(request):
 #	Query.resolve_get_music_recommendations()
+def track_view(request):
+    if request.method == 'POST':
+        try:
+            track_id = request.POST.get('trackId')  # 'trackId' is the key used to send the track ID from the frontend
+            print(f"Received track ID from frontend: {track_id}")
+            # You can now do whatever you want with the track ID, such as saving it to your database or performing other operations.
+            
+            # Return a success response to the frontend
+            return JsonResponse({'message': 'Track ID received successfully.'})
+        except Exception as e:
+            print(f"Error processing track ID: {str(e)}")
+            return JsonResponse({'error': 'Failed to process track ID.'}, status=500)
+    
+    return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
 @csrf_exempt
 def upload_mp3(request):
@@ -93,3 +107,4 @@ def upload_mp3(request):
 	else:
 		form = MP3FileForm()
 	return render(request, 'upload_mp3.html', {'form': form})
+
