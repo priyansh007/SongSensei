@@ -88,8 +88,11 @@ def upload_mp3(request):
 			#turn raw data into spotify links
 			spotify_links = raw_data_to_spotifylink(similar_songs_data)
 
-			return HttpResponse(spotify_links, status=200)
+			r#eturn HttpResponse(spotify_links, status=200)
+			return JsonResponse({'Similar songs to ' + mp3file_obj.name: spotify_links}, status=200)
 			return HttpResponse('form recieved successfully!', status=200)
+		
+		return JsonResponse({'error': 'Form is not valid'}, status=400)
 	else:
 		form = MP3FileForm()
 	return render(request, 'upload_mp3.html', {'form': form})
