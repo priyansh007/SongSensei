@@ -82,9 +82,13 @@ def upload_mp3(request):
 			library_track_id = create_library_track(upload_id, mp3file_obj.name)
 
 			#request similar songs (NEED TO WAIT UNTIL SONG IS ANALYZED)
+			library_track_id = '15029843'
 			similar_songs_data = request_similar_from_library(library_track_id)
 
-			return HttpResponse(similar_songs_data, status=200)
+			#turn raw data into spotify links
+			spotify_links = raw_data_to_spotifylink(similar_songs_data)
+
+			return HttpResponse(spotify_links, status=200)
 			return HttpResponse('form recieved successfully!', status=200)
 	else:
 		form = MP3FileForm()
