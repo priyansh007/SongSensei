@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
 
 from .models import Text
 
@@ -22,30 +23,43 @@ from uploadsongfile.createlibrarytrack import *
 from retrievesimilarsongs.librarysimilarsongs import *
 
 #import cyanite
-CYANITE_API_URL = "https://app.cyanite.ai/search?source=spotify&sourceId&sourceUserLibraryId"
-CYANITE_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiSW50ZWdyYXRpb25BY2Nlc3NUb2tlbiIsInZlcnNpb24iOiIxLjAiLCJpbnRlZ3JhdGlvbklkIjo2NDYsInVzZXJJZCI6NTI5ODgsImFjY2Vzc1Rva2VuU2VjcmV0IjoiODliZjYzMGZjODNjNWE2NDRlN2U1YTBlMmUzZDlmNzJiZTNiYWNhOTc2MjdjM2QxZTE3Y2ZhODUwN2VkOGFhMSIsImlhdCI6MTY5MTE4MTQyOH0.dZJxm4eYLE80YjiaNDaOcn9SmztHudvGsIj-QFBgEqM'
+
 # says that this function can do handle POST requests
 
+def fetch_song_details(request):
+    if request.method == 'POST':
+        # Get the trackId and accessToken from the request body
+        track_id = request.POST.get('trackId')
+        access_token = request.POST.get('accessToken')
+
+        # Perform any actions you need with track_id and access_token
+        # For example, you can use the access_token to make a request to the Spotify API to get song details
+
+        # For demonstration purposes, let's assume we are just returning some sample data
+        song_details = {
+            'track_id': track_id,
+            'access_token': access_token,
+            'song_name': 'Sample Song',
+            'artist': 'Sample Artist',
+            'album': 'Sample Album',
+            'preview_url': 'https://sample-url.com/sample-preview.mp3',
+        }
+
+        # Return the song details in the response
+        return JsonResponse(song_details)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+    
 @api_view(["POST"])
 def track_view(request):
     if request.method == 'POST':
         try:
             track_id = request.data.get('trackId')  # 'trackId' is the key used to send the track ID from the frontend
             print(f"Received track ID from frontend: {track_id}")
+            # You can now do whatever you want with the track ID, such as saving it to your database or performing other operations.
 
-            # Make a request to the Cyanite API to get similar songs
-            headers = {
-                "Authorization": f"Bearer {CYANITE_API_KEY}",
-            }
-            params = {
-                "track_id": track_id,
-                "limit": 10,  # You can adjust the number of similar songs you want to retrieve
-            }
-            response = requests.get(CYANITE_API_URL, headers=headers, params=params)
-            response_data = response.json()
-
-            # Return the similar songs as a response to the frontend
-            return Response(response_data)
+            # Return a success response to the frontend
+            return Response({'message': 'Track ID received successfully.'})
         except Exception as e:
             print(f"Error processing track ID: {str(e)}")
             return Response({'error': 'Failed to process track ID.'}, status=500)
@@ -120,4 +134,3 @@ def upload_mp3(request):
 	else:
 		form = MP3FileForm()
 	return render(request, 'upload_mp3.html', {'form': form})
-

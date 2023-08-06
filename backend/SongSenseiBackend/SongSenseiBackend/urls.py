@@ -23,5 +23,6 @@ urlpatterns = [
     path('incoming-webhook/', webhook_handler, name='webhook_handler'),
     path('', webhook_handler, name='webhook_handler'),
     path('upload/', upload_mp3, name='upload_mp3'),
-    path('track_view/', track_view, name='track_view')
+    path('track/', track_view, name='track_view'),
+    path('fetch_song_details/', fetch_song_details, name='fetch_song_details')
 ]
