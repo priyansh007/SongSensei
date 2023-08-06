@@ -3,7 +3,7 @@ import { Link } from "wouter"; // Import the Link component
 
 function Home() {
   return (
-    <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: "#c4ae78" }}>
+    <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: "#d6c099" }}>
       <div className="my-container container mx-auto py-2">
         <div className="flex flex-col md:flex-row items-center">
           {/* Text Section */}

@@ -15,7 +15,7 @@ const styles = {
     font-size: 32px; /* Increase font size for the header */
     font-weight: 600; /* Use font weight 600 for a bold look */
     margin: 0; /* Remove margin */
-    padding: 0; /* Remove padding */
+    padding: 10px; /* Add 10px padding on all sides */
   `,
   pageTitle: css`
     display: flex;
@@ -34,6 +34,7 @@ const styles = {
     font-size: 20px; /* Decrease font size for the navbar */
     color: white;
     font-weight: 600; /* Use font weight 600 for a bold look */
+    padding: 10px; /* Add 10px padding on all sides */
     & > a {
       margin-right: 30px; /* Increase the margin to space out the links more */
       color: #fff;
