@@ -17,16 +17,16 @@ function Team() {
       <div className="container mx-auto py-1" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
         <div style={{ display: "flex", justifyContent: "center", paddingBottom: "64px"}}>
           <div className="bg-white border border-gray-300 shadow-md p-1 rounded-lg mx-4 flex flex-col justify-center items-center" style={{ width: "356px", height: "123px" }}>
-            <h2 className="text-2xl font-semibold mb-2" style={{ fontSize: "32px", fontFamily: "Inter, sans-serif", color: "#EA6656", fontWeight: "700" }}>Joshua Zhang</h2>
-            <p className="font-semibold" style={{ marginTop: "1px", color: "#678398", fontWeight: "500" }}>Junior</p>
+            <h2 className="font-semibold" style={{ fontSize: "32px", fontFamily: "Inter, sans-serif", color: "#EA6656", fontWeight: "700" }}>Joshua Zhang</h2>
+            <p className="font-semibold" style={{ marginTop: "10px", color: "#678398", fontWeight: "500" }}>Junior</p>
           </div>
           <div className="bg-white border border-gray-300 shadow-md p-1 rounded-lg mx-4 flex flex-col justify-center items-center" style={{ width: "356px", height: "123px" }}>
-            <h2 className="text-2xl font-semibold mb-2" style={{ fontSize: "32px", fontFamily: "Inter, sans-serif", color: "#EA6656", fontWeight: "700" }}>Kai Yuan</h2>
-            <p className="font-semibold" style={{ marginTop: "1px", color: "#678398", fontWeight: "500" }}>Junior</p>
+            <h2 className="font-semibold" style={{ fontSize: "32px", fontFamily: "Inter, sans-serif", color: "#EA6656", fontWeight: "700" }}>Kai Yuan</h2>
+            <p className="font-semibold" style={{ marginTop: "10px", color: "#678398", fontWeight: "500" }}>Junior</p>
           </div>
           <div className="bg-white border border-gray-300 shadow-md p-1 rounded-lg mx-4 flex flex-col justify-center items-center" style={{ width: "356px", height: "123px" }}>
-            <h2 className="text-2xl font-semibold mb-2" style={{ fontSize: "32px", fontFamily: "Inter, sans-serif", color: "#EA6656", fontWeight: "700" }}>Aaron Hsi</h2>
-            <p className="font-semibold" style={{ marginTop: "1px", color: "#678398", fontWeight: "500" }}>Senior</p>
+            <h2 className="font-semibold" style={{ fontSize: "32px", fontFamily: "Inter, sans-serif", color: "#EA6656", fontWeight: "700" }}>Aaron Hsi</h2>
+            <p className="font-semibold" style={{ marginTop: "10px", color: "#678398", fontWeight: "500" }}>Senior</p>
           </div>
         </div>
         <div className="container mx-auto">
@@ -45,12 +45,12 @@ function Team() {
         {/* Row 2 */}
         <div style={{ display: "flex", justifyContent: "center", paddingBottom: "128px" }}>
           <div className="bg-white border border-gray-300 shadow-md p-4 rounded-lg mx-4 flex flex-col justify-center items-center" style={{ width: "356px", height: "123px" }}>
-            <h2 className="text-2xl font-semibold mb-2" style={{ fontSize: "32px", fontFamily: "Inter, sans-serif", color: "#EA6656", fontWeight: "700" }}>Tony Feng</h2>
-            <p className="font-semibold" style={{ marginTop: "1px", color: "#678398", fontWeight: "500" }}>Junior</p>
+            <h2 className="font-semibold" style={{ fontSize: "32px", fontFamily: "Inter, sans-serif", color: "#EA6656", fontWeight: "700" }}>Tony Feng</h2>
+            <p className="font-semibold" style={{ marginTop: "10px", color: "#678398", fontWeight: "500" }}>Junior</p>
           </div>
           <div className="bg-white border border-gray-300 shadow-md p-4 rounded-lg mx-4 flex flex-col justify-center items-center" style={{ width: "356px", height: "123px" }}>
-            <h2 className="text-2xl font-semibold mb-2" style={{ fontSize: "32px", fontFamily: "Inter, sans-serif", color: "#EA6656", fontWeight: "700" }}>Gunnar Erickson</h2>
-            <p className="font-semibold" style={{ marginTop: "1px", color: "#678398", fontWeight: "500" }}>Junior</p>
+            <h2 className="font-semibold" style={{ fontSize: "32px", fontFamily: "Inter, sans-serif", color: "#EA6656", fontWeight: "700" }}>Gunnar Erickson</h2>
+            <p className="font-semibold" style={{ marginTop: "10px", color: "#678398", fontWeight: "500" }}>Junior</p>
           </div>
         </div>
       </div>
