@@ -3,7 +3,7 @@ import { Link } from "wouter"; // Import the Link component
 
 function Home() {
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: "#c4ae78" }}>
       <div className="my-container container mx-auto py-2">
         <div className="flex flex-col md:flex-row items-center">
           {/* Text Section */}
@@ -16,8 +16,8 @@ function Home() {
                 Input any song from Spotify and SongSensei will analyze and recommend new songs just for you
               </p>
               {/* Button */}
-              <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
-              <Link href="/search">Try it out</Link>
+              <button className="text-white px-4 py-2 rounded-md" style={{ width: "140px", backgroundColor: "#0069FF" }}>
+                <Link href="/search">Try it out</Link>
               </button>
             </div>
           </div>
