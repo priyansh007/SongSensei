@@ -1,3 +1,6 @@
+import { Link } from 'wouter';
+import axios from 'axios';
+import React, { useState } from 'react';
 function Input() {
     const handleFileInput = (event) => {
       const file = event.target.files[0];
@@ -7,10 +10,30 @@ function Input() {
       }
     };
   
-    const handleAnalyzeButtonClick = () => {
-      // Implement your analyze button functionality here
-      console.log('Analyze button clicked');
+    const handleAnalyzeButtonClick = async (event) => {
+      event.preventDefault();
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+    
+      if (file) {
+        const formData = new FormData();
+        formData.append('name', file.name);
+        formData.append('mp3_file', file);
+      
+        try {
+          const response = await fetch('http://localhost:8000/upload/', {
+            method: 'POST',
+            body: formData,
+          });
+          console.log(response)
+    
+          // Handle the response from the server if needed
+        } catch (error) {
+          console.error('Error uploading file:', error);
+        }
+      };
     };
+    
   
     return (
       <div className="min-h-screen flex flex-col items-center justify-start pt-20">
@@ -18,6 +41,8 @@ function Input() {
           <label htmlFor="fileInput" className="block text-gray-700 font-bold mb-2">
             Choose a file:
           </label>
+          
+
           <input
             type="file"
             id="fileInput"
@@ -32,7 +57,11 @@ function Input() {
         >
           Analyze
         </button>
-      </div>
+            
+          </div>
+            
+      
     );
   }
+
   export default Input;
