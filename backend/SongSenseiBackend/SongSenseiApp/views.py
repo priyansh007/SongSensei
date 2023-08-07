@@ -80,12 +80,8 @@ def webhook_handler(request):
 @csrf_exempt
 def upload_mp3(request):
 	if request.method == 'POST':
-		print("coming here")
 		form = MP3FileForm(request.POST, request.FILES)
-		print("POST Data:", request.POST)
-		print("Files:", request.FILES)
 		if form.is_valid():
-			print("coming here as well")
 			#saving the mp3file object (model)
 			mp3file_obj = form.save()
 			print(mp3file_obj.name)
