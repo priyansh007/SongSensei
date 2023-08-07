@@ -8,19 +8,18 @@ const styles = {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px;
-    margin-bottom: 10px; /* Add margin-bottom to create a gap between header and content */
     background: linear-gradient(135deg, #0070f3, #00b4d8); /* Gradient background color */
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Add a box shadow for depth */
     color: #fff; /* Set the text color to white */
     font-family: Arial, sans-serif; /* Use a fallback font stack */
     font-size: 32px; /* Increase font size for the header */
     font-weight: 600; /* Use font weight 600 for a bold look */
+    margin: 0; /* Remove margin */
+    padding: 10px; /* Add 10px padding on all sides */
   `,
   pageTitle: css`
     display: flex;
     align-items: center;
-    margin-right: 10px;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 40px;
     font-weight: 700;
@@ -35,6 +34,7 @@ const styles = {
     font-size: 20px; /* Decrease font size for the navbar */
     color: white;
     font-weight: 600; /* Use font weight 600 for a bold look */
+    padding: 10px; /* Add 10px padding on all sides */
     & > a {
       margin-right: 30px; /* Increase the margin to space out the links more */
       color: #fff;
@@ -65,7 +65,7 @@ function Navbar() {
   return (
     <header className={styles.header}>
       <div className={styles.pageTitle}>
-        <img src={logo} alt="Logo"/>
+        <img src={logo} alt="Logo" />
         Song Sensei
       </div>
       <nav className={styles.navbar}>
@@ -80,6 +80,9 @@ function Navbar() {
         </Link>
         <Link href="/search" className={`${styles.navLink} ${isActive("/search")}`}>
           Search
+        </Link>
+        <Link href="/input" className={`${styles.navLink} ${isActive("/input")}`}>
+          File Input
         </Link>
       </nav>
     </header>

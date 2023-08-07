@@ -5,10 +5,13 @@ import config from './config';
 import './search.css'; // Import CSS file for styling
 
 const handleLogin = () => {
-  window.location.href = `https://accounts.spotify.com/authorize?client_id=${config.clientId}&response_type=code&redirect_uri=${encodeURIComponent(config.redirectUri)}`;
+  setHasSearched(false); // Reset hasSearched state to false when the user clicks "Login with Spotify"
+  window.location.href = `https://accounts.spotify.com/authorize?client_id=${config.clientId}&response_type=token&redirect_uri=${encodeURIComponent(
+    config.redirectUri
+  )}&scope=user-library-read`;
 };
 
-const SearchResults = ({ results }) => {
+const SearchResults = ({ results, handleTrackSelect, sendTrackToBackend }) => {
   const [currentTrack, setCurrentTrack] = useState(null);
   const [volume, setVolume] = useState(0.5);
   const audioRef = useRef(new Audio());
@@ -46,6 +49,11 @@ const SearchResults = ({ results }) => {
     setVolume(parseFloat(newVolume)); // Update the volume state
   };
 
+  const handleSelectTrack = (trackId) => {
+    handleTrackSelect(trackId);
+    sendTrackToBackend(trackId); // Call the sendTrackToBackend function with the track ID
+  };
+
   return (
     <div className="search-results">
       <div className="volume-controls">
@@ -69,15 +77,19 @@ const SearchResults = ({ results }) => {
             </div>
             {track.preview_url ? (
               <div className="audio-controls">
-                <button
-                  className="play-button"
-                  onClick={() => playMusic(track)}
-                >
+                <button className="play-button" onClick={() => playMusic(track)}>
                   {currentTrack && currentTrack.id === track.id ? 'Pause' : 'Play'}
+                </button>
+                <button className="select-button" onClick={() => handleSelectTrack(track.id)}>
+                  Select
                 </button>
               </div>
             ) : (
-              <p>No preview available for this track.</p>
+              <div className="audio-controls">
+                <button className="select-button" onClick={() => handleSelectTrack(track.id)}>
+                  Select
+                </button>
+              </div>
             )}
           </li>
         ))}
@@ -89,7 +101,10 @@ const SearchResults = ({ results }) => {
 const SpotifySearch = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [accessToken, setAccessToken] = useState('');
+  const [hasSearched, setHasSearched] = useState(false);
+  const [selectedTrackId, setSelectedTrackId] = useState(null);
 
   useEffect(() => {
     // Check if the URL has the authorization code
@@ -113,6 +128,7 @@ const SpotifySearch = () => {
 
       const accessToken = response.data.access_token;
       setAccessToken(accessToken); // Save the access token in state
+      setHasSearched(false); // Reset hasSearched state to false to clear previous search results
     } catch (error) {
       console.error('Error fetching access token:', error);
     }
@@ -120,9 +136,16 @@ const SpotifySearch = () => {
 
   const handleSearchQuery = async () => {
     try {
+      setLoading(true);
       const searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(
         searchQuery
       )}&type=track`;
+
+      // Ensure that accessToken is not empty or undefined before making the request
+      if (!accessToken) {
+        setSearchResults([]); // Clear previous search results
+        throw new Error('Please log in first');
+      }
 
       const response = await axios.get(searchUrl, {
         headers: {
@@ -134,45 +157,90 @@ const SpotifySearch = () => {
     } catch (error) {
       console.error('Error fetching data from Spotify:', error);
       setSearchResults([]);
+    } finally {
+      setLoading(false);
+      setHasSearched(true);
+    }
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleSearchQuery();
+    }
+  };
+
+  const handleLogin = () => {
+    setHasSearched(false); // Reset hasSearched state to false when the user clicks "Login with Spotify"
+    window.open(
+      `https://accounts.spotify.com/authorize?client_id=${config.clientId}&response_type=code&redirect_uri=${encodeURIComponent(
+        config.redirectUri
+      )}&scope=user-library-read`,
+      '_blank'
+    );
+  };
+
+  const handleSelectTrack = async (trackId) => {
+    // Add the logic to handle the selected track
+    console.log('Selected track ID:', trackId);
+  };
+
+  const sendTrackToBackend = async (trackId) => {
+    try {
+      // Make an HTTP POST request to your backend with the selected track ID in the request body
+      await axios.post('http://localhost:8000/track/', { trackId });
+      console.log('Track ID sent to backend:', trackId);
+    } catch (error) {
+      console.error('Error sending track ID to backend:', error);
     }
   };
 
   return (
     <div className="text-center mt-20">
-      <h1 className="text-xl font-bold text-slate-600">Spotify Song Search</h1>
-      <div className="mt-4">
+      <h1 className="text-4xl font-bold text-slate-600 font-montserrat">
+        Spotify Song Search
+      </h1>
+      <div className="mt-6">
         <input
           type="text"
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none"
+          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none w-96"
           placeholder="Enter your search query..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyPress={handleKeyPress}
         />
-        <button
-          className="px-4 py-2 ml-2 bg-blue-500 text-white rounded-lg"
-          onClick={handleSearchQuery}
-        >
-          Search
+      </div>
+      <div className="mt-4">
+        {loading ? (
+          <p>Loading...</p>
+        ) : hasSearched ? (
+          searchResults.length > 0 ? (
+            <SearchResults
+              results={searchResults}
+              handleTrackSelect={handleSelectTrack}
+              sendTrackToBackend={sendTrackToBackend} // Pass the callback function to the child component
+            />
+          ) : (
+            <p>{accessToken ? "No results found." : "Please log in first."}</p>
+          )
+        ) : null}
+      </div>
+      <div className="mt-4">
+        {/* Center the "Login with Spotify" button */}
+        <div className="flex justify-center">
+          <button
+            className="px-4 py-2 mt-4 bg-green-500 text-white rounded-lg flex items-center"
+            onClick={handleLogin}
+          >
+            <img src={"src/images/spotify.png"} alt="Spotify Logo" className="w-6 h-6 mr-2" />
+            Login with Spotify
+          </button>
+        </div>
+      </div>
+      <div className="mt-4">
+        {/* Wrap the "Go Back" link inside a button */}
+        <button className="px-4 py-2 bg-blue-500 text-white rounded-lg">
+          <Link href="/">Go Back</Link>
         </button>
-      </div>
-      <div className="mt-4">
-        {searchResults.length > 0 ? (
-          <SearchResults results={searchResults} />
-        ) : (
-          <p>No results found.</p>
-        )}
-      </div>
-      <div className="mt-4">
-        {/* Call handleLogin when the user clicks on the login button */}
-        <button
-          className="px-4 py-2 mt-4 bg-green-500 text-white rounded-lg"
-          onClick={handleLogin}
-        >
-          Login with Spotify
-        </button>
-      </div>
-      <div className="mt-4">
-        <Link href="/">Go Back</Link>
       </div>
     </div>
   );

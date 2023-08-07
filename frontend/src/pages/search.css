@@ -1,8 +1,13 @@
-.search-results {
-    max-width: 600px;
+  .search-results {
+    max-width: 800px;
     margin: 0 auto;
   }
-  
+
+  .text-xl {
+    font-size: 10rem;
+    font-family: 'Montserrat', sans-serif;
+  }
+
   .track-box {
     display: flex;
     align-items: center;
@@ -35,6 +40,17 @@
   .audio-controls {
     display: flex;
     align-items: center;
+  }
+
+  .select-button { /* New styles for the Select button */
+    background-color: #1db954;
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    border: none;
+    margin-right: 1rem;
+    font-size: 0.9rem;
   }
   
   .play-button {
@@ -86,4 +102,8 @@
   .play-button:hover {
     background-color: #1ed760;
   }
-  
+
+  input[type="text"] {
+    font-size: 2rem;
+    padding: 1rem 1.5rem;
+  }
