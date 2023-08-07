@@ -1,5 +1,6 @@
 import requests
 import os
+import time
 
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
@@ -57,7 +58,23 @@ def request_similar_from_library(track_id):
 
         #turn RAW DATA into list of songs (dictionary with: index -> node -> id -> spotify track id)
         print(data)
-        list_of_songs = data['data']['libraryTrack']['similarTracks']['edges']
+
+        list_of_songs = []
+
+        max_requests = 10
+
+        for i in range(0, max_requests):
+            response = requests.post(url, json={'query': query, 'variables': variables}, headers=headers)
+            try:
+                data = response.json()
+                list_of_songs = data['data']['libraryTrack']['similarTracks']['edges']
+                break
+            except:
+                #continue trying to request similar songs
+                print("Similar songs request failed due to: ", data['data']['libraryTrack']['similarTracks'])
+            
+            time.sleep(5)
+        
         return list_of_songs
     else:
         print("Request failed with status code:", response.status_code)
@@ -79,6 +96,9 @@ def raw_data_to_spotifylink(raw_data):
     for i in range(0, len(raw_data)):
         
         # appends the actual track id to the list (along with making it a spotify url)
-        spotifylinks.append('http://open.spotify.com/track/' + raw_data[i]['node']['id'])
+        try:
+            spotifylinks.append('http://open.spotify.com/track/' + raw_data[i]['node']['id'])
+        except:
+            spotifylinks.append('Error retrieving this song.')
 
     return spotifylinks
