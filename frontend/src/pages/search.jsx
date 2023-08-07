@@ -1,15 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'wouter';
+import { Link, Route, useLocation } from 'wouter';
 import axios from 'axios';
 import config from './config';
+import SelectedSongPage from './selectedsongpage';
 import './search.css'; // Import CSS file for styling
-
-const handleLogin = () => {
-  setHasSearched(false); // Reset hasSearched state to false when the user clicks "Login with Spotify"
-  window.location.href = `https://accounts.spotify.com/authorize?client_id=${config.clientId}&response_type=token&redirect_uri=${encodeURIComponent(
-    config.redirectUri
-  )}&scope=user-library-read`;
-};
+axios.defaults.xsrfCookieName = 'csrftoken';
+axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 
 const SearchResults = ({ results, handleTrackSelect, sendTrackToBackend }) => {
   const [currentTrack, setCurrentTrack] = useState(null);
@@ -49,9 +45,11 @@ const SearchResults = ({ results, handleTrackSelect, sendTrackToBackend }) => {
     setVolume(parseFloat(newVolume)); // Update the volume state
   };
 
-  const handleSelectTrack = (trackId) => {
-    handleTrackSelect(trackId);
-    sendTrackToBackend(trackId); // Call the sendTrackToBackend function with the track ID
+  const handleSelectTrack = async (trackId) => {
+    // Update the selectedSong state when a track is selected
+    const selectedTrack = results.find((track) => track.id === trackId);
+    handleTrackSelect(selectedTrack); // Call the function from the props
+    sendTrackToBackend(trackId); // Call the sendTrackToBackend function with the track ID and accessToken
   };
 
   return (
@@ -104,7 +102,9 @@ const SpotifySearch = () => {
   const [loading, setLoading] = useState(false);
   const [accessToken, setAccessToken] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
-  const [selectedTrackId, setSelectedTrackId] = useState(null);
+  const [selectedSong, setSelectedSong] = useState(null);
+  const [match, params] = useLocation();
+  const [location, setLocation] = useLocation(); // Add this line to get the location
 
   useEffect(() => {
     // Check if the URL has the authorization code
@@ -119,21 +119,23 @@ const SpotifySearch = () => {
 
   const getAccessToken = async (code) => {
     try {
-      // Use the obtained code to fetch the access token from the backend
-      const response = await axios.get('http://localhost:5000/callback', {
-        params: {
-          code: code,
-        },
+      const response = await axios.post('http://localhost:5000/callback', {
+        code: code, // Send the code in the request body
       });
-
-      const accessToken = response.data.access_token;
-      setAccessToken(accessToken); // Save the access token in state
-      setHasSearched(false); // Reset hasSearched state to false to clear previous search results
+  
+      if (response.status === 200) {
+        const accessToken = response.data.access_token;
+        console.log("Received access token:", accessToken);
+        setAccessToken(accessToken); // Save the access token in state
+        setHasSearched(false); // Reset hasSearched state to false to clear previous search results
+      } else {
+        console.error('Error: Unexpected status code', response.status);
+      }
     } catch (error) {
       console.error('Error fetching access token:', error);
     }
   };
-
+  
   const handleSearchQuery = async () => {
     try {
       setLoading(true);
@@ -152,6 +154,7 @@ const SpotifySearch = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+
 
       setSearchResults(response.data.tracks.items);
     } catch (error) {
@@ -177,21 +180,31 @@ const SpotifySearch = () => {
       )}&scope=user-library-read`,
       '_blank'
     );
+    
   };
-
-  const handleSelectTrack = async (trackId) => {
-    // Add the logic to handle the selected track
-    console.log('Selected track ID:', trackId);
-  };
+  
 
   const sendTrackToBackend = async (trackId) => {
     try {
       // Make an HTTP POST request to your backend with the selected track ID in the request body
-      await axios.post('http://localhost:8000/track/', { trackId });
-      console.log('Track ID sent to backend:', trackId);
+      await axios.post('http://localhost:8000/track/', { trackId});
+      console.log('Track ID sent to backend for track:', trackId);
     } catch (error) {
-      console.error('Error sending track ID to backend:', error);
+      console.error('Error sending track ID and access token to backend for track:', error);
     }
+  };
+  
+
+  const handleSelectTrack = async (trackId) => {
+    // Update the selectedSong state when a track is selected
+    const selectedTrack = searchResults.find((track) => track.id === trackId);
+    setSelectedSong(selectedTrack);
+  
+    // Call fetch_song_details_in_the_backend with the track ID and accessToken
+    await fetch_song_details_in_backend(trackId, accessToken);
+  
+    // Use setLocation to change the URL and redirect to the SelectedSongPage
+    setLocation(`/get_track_info/`);
   };
 
   return (
@@ -210,38 +223,45 @@ const SpotifySearch = () => {
         />
       </div>
       <div className="mt-4">
-        {loading ? (
-          <p>Loading...</p>
-        ) : hasSearched ? (
-          searchResults.length > 0 ? (
-            <SearchResults
-              results={searchResults}
-              handleTrackSelect={handleSelectTrack}
-              sendTrackToBackend={sendTrackToBackend} // Pass the callback function to the child component
-            />
-          ) : (
-            <p>{accessToken ? "No results found." : "Please log in first."}</p>
-          )
-        ) : null}
-      </div>
-      <div className="mt-4">
-        {/* Center the "Login with Spotify" button */}
         <div className="flex justify-center">
           <button
             className="px-4 py-2 mt-4 bg-green-500 text-white rounded-lg flex items-center"
             onClick={handleLogin}
           >
-            <img src={"src/images/spotify.png"} alt="Spotify Logo" className="w-6 h-6 mr-2" />
+            <img src="src/images/spotify.png" alt="Spotify Logo" className="w-6 h-6 mr-2" />
             Login with Spotify
           </button>
         </div>
       </div>
       <div className="mt-4">
-        {/* Wrap the "Go Back" link inside a button */}
         <button className="px-4 py-2 bg-blue-500 text-white rounded-lg">
           <Link href="/">Go Back</Link>
         </button>
       </div>
+
+      {/* Render the SelectedSongPage component when a song is selected */}
+
+      <Route path="/selected-song/:trackId">
+        {({ params }) => (
+          <SelectedSongPage trackId={params.trackId.toString()} accessToken={accessToken} />
+        )}
+      </Route>
+
+
+
+      {/* Render the SearchResults component with the necessary props */}
+      {hasSearched ? (
+        searchResults.length > 0 ? (
+          <SearchResults
+            results={searchResults}
+            handleTrackSelect={handleSelectTrack}
+            sendTrackToBackend={sendTrackToBackend}
+            setSelectedSong={setSelectedSong} // Pass setSelectedSong as a prop
+          />
+        ) : (
+          <p>{accessToken ? 'No results found.' : 'Please log in first.'}</p>
+        )
+      ) : null}
     </div>
   );
 };

@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
 
 from .models import Text
 
@@ -22,30 +23,19 @@ from uploadsongfile.createlibrarytrack import *
 from retrievesimilarsongs.librarysimilarsongs import *
 
 #import cyanite
-CYANITE_API_URL = "https://app.cyanite.ai/search?source=spotify&sourceId&sourceUserLibraryId"
-CYANITE_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiSW50ZWdyYXRpb25BY2Nlc3NUb2tlbiIsInZlcnNpb24iOiIxLjAiLCJpbnRlZ3JhdGlvbklkIjo2NDYsInVzZXJJZCI6NTI5ODgsImFjY2Vzc1Rva2VuU2VjcmV0IjoiODliZjYzMGZjODNjNWE2NDRlN2U1YTBlMmUzZDlmNzJiZTNiYWNhOTc2MjdjM2QxZTE3Y2ZhODUwN2VkOGFhMSIsImlhdCI6MTY5MTE4MTQyOH0.dZJxm4eYLE80YjiaNDaOcn9SmztHudvGsIj-QFBgEqM'
-# says that this function can do handle POST requests
 
+# says that this function can do handle POST requests
+    
 @api_view(["POST"])
 def track_view(request):
     if request.method == 'POST':
         try:
             track_id = request.data.get('trackId')  # 'trackId' is the key used to send the track ID from the frontend
             print(f"Received track ID from frontend: {track_id}")
+            # You can now do whatever you want with the track ID, such as saving it to your database or performing other operations.
 
-            # Make a request to the Cyanite API to get similar songs
-            headers = {
-                "Authorization": f"Bearer {CYANITE_API_KEY}",
-            }
-            params = {
-                "track_id": track_id,
-                "limit": 10,  # You can adjust the number of similar songs you want to retrieve
-            }
-            response = requests.get(CYANITE_API_URL, headers=headers, params=params)
-            response_data = response.json()
-
-            # Return the similar songs as a response to the frontend
-            return Response(response_data)
+            # Return a success response to the frontend
+            return Response({'message': 'Track ID received successfully.'})
         except Exception as e:
             print(f"Error processing track ID: {str(e)}")
             return Response({'error': 'Failed to process track ID.'}, status=500)
@@ -109,15 +99,37 @@ def upload_mp3(request):
 			library_track_id = create_library_track(upload_id, mp3file_obj.name)
 
 			#request similar songs (NEED TO WAIT UNTIL SONG IS ANALYZED)
-			library_track_id = '15029843'
+			#library_track_id = '15029843'
 			similar_songs_data = request_similar_from_library(library_track_id)
 
 			#turn raw data into spotify links
 			spotify_links = raw_data_to_spotifylink(similar_songs_data)
 
-			return HttpResponse(spotify_links, status=200)
+			#return HttpResponse(spotify_links, status=200)
+			return JsonResponse({'Similar songs to ' + mp3file_obj.name: spotify_links}, status=200)
 			return HttpResponse('form recieved successfully!', status=200)
+		
+		return JsonResponse({'error': 'Form is not valid'}, status=400)
 	else:
 		form = MP3FileForm()
 	return render(request, 'upload_mp3.html', {'form': form})
 
+@api_view(["GET"])
+def fetch_song_details(request):
+    if request.method == 'GET':
+        track_id = request.GET.get('trackId')
+        access_token = request.GET.get('accessToken')
+        print(access_token)
+        print(track_id)
+        # Do something with track_id and access_token, like fetching the song details from Spotify API
+        
+        # Assuming song_details is a dictionary containing information about the song
+        song_details = {
+            'track_id': track_id,
+            'access_token': access_token,
+            # Add other song details here
+        }
+        
+        return JsonResponse(song_details)
+    else:
+        return JsonResponse({'error': 'Invalid method'}, status=400)

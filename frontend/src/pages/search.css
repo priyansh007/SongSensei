@@ -42,6 +42,11 @@
     align-items: center;
   }
 
+  .select-controls {
+    display: flex;
+    align-items: center;
+  }
+
   .select-button { /* New styles for the Select button */
     background-color: #1db954;
     color: #ffffff;
