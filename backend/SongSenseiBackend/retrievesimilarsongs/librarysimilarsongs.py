@@ -46,6 +46,9 @@ def request_similar_from_library(track_id):
     }
 
     response = requests.post(url, json={'query': query, 'variables': variables}, headers=headers)
+    
+    # TO-DO: CONTINUE REQUESTING UNTIL THE SONG HAS BEEN ANALYZED
+    # --------------V V V V------------
 
     if response.status_code == 200:
         data = response.json()
@@ -53,10 +56,14 @@ def request_similar_from_library(track_id):
         #print(data)
 
         #turn RAW DATA into list of songs (dictionary with: index -> node -> id -> spotify track id)
+        print(data)
         list_of_songs = data['data']['libraryTrack']['similarTracks']['edges']
         return list_of_songs
     else:
         print("Request failed with status code:", response.status_code)
+        response = requests.post(url, json={'query': query, 'variables': variables}, headers=headers)
+
+
 
 
 #list_of_songs = request_similar_from_library('15018498')

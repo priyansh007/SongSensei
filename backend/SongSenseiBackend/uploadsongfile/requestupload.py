@@ -33,6 +33,7 @@ def request_upload():
     if response.status_code == 200:
         # Parse the response JSON data
         data = response.json()
+        print(data)
         return data['data']['fileUploadRequest'] # returns a dictionary with 'id' and 'uploadUrl'
     else:
         print("Failed to send the GraphQL request. Status code:", response.status_code)
