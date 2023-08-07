@@ -1,25 +1,32 @@
-import { Route, Switch } from 'wouter';
+import React, { useState, useEffect } from 'react';
+import { Route, Switch, useLocation } from 'wouter';
 import About from './pages/about';
 import Home from './pages/home';
 import Navbar from './components/navbar';
 import Team from './pages/team';
 import SpotifySearch from './pages/search'; // Provide the correct path to your SpotifySearch component
 import Input from './pages/file_input';
-
 import './App.css';
+import SelectedSongPage from './pages/selectedsongpage';
 
-function App() {
+
+const App = () => {
+  const [selectedSong, setSelectedSong] = useState(null);
+
   return (
-    <>
-      <Navbar />
-      <Switch>
-        <Route path="/about" component={About} />
-        <Route path="/team" component={Team} />
-        <Route path="/search" component={SpotifySearch} /> {/* Use the SpotifySearch component here */}
-        <Route path="/" component={Home} />
-        <Route path="/input" component={Input}/>
-      </Switch>
-    </>
+      <>
+        <Navbar />
+        <Switch>
+          <Route path="/about" component={About} />
+          <Route path="/team" component={Team} />
+          <Route path="/search" component={SpotifySearch} />
+          <Route path="/" component={Home} />
+          <Route path="/input" component={Input}/>
+          <Route path="/selected-song/:trackId">
+            {params => <SelectedSongPage trackId={params.trackId} />}
+          </Route>
+        </Switch>
+      </>
   );
 }
 
