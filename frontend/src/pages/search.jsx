@@ -104,6 +104,7 @@ const SpotifySearch = () => {
   const [loading, setLoading] = useState(false);
   const [accessToken, setAccessToken] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
+  const [selectedTrackId, setSelectedTrackId] = useState(null);
 
   useEffect(() => {
     // Check if the URL has the authorization code
@@ -185,8 +186,8 @@ const SpotifySearch = () => {
 
   const sendTrackToBackend = async (trackId) => {
     try {
-      // Make an HTTP POST request to your backend with the selected track ID
-      await axios.post('http://localhost:8000/track', { trackId });
+      // Make an HTTP POST request to your backend with the selected track ID in the request body
+      await axios.post('http://localhost:8000/track/', { trackId });
       console.log('Track ID sent to backend:', trackId);
     } catch (error) {
       console.error('Error sending track ID to backend:', error);
