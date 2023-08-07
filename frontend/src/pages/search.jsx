@@ -186,7 +186,7 @@ const SpotifySearch = () => {
 
   const sendTrackToBackend = async (trackId) => {
     try {
-      // Make an HTTP POST request to your backend with the selected track ID and access token in the request body
+      // Make an HTTP POST request to your backend with the selected track ID in the request body
       await axios.post('http://localhost:8000/track/', { trackId});
       console.log('Track ID sent to backend for track:', trackId);
     } catch (error) {
@@ -194,23 +194,6 @@ const SpotifySearch = () => {
     }
   };
   
-
-  const fetch_song_details_in_backend = async (trackId, accessToken) => {
-    try {
-      // Make an HTTP POST request to your backend for the selected song page with the selected track ID and access token in the request body
-      const response = await axios.post('http://localhost:8000/fetch_song_details/', {
-        trackId: trackId,
-        accessToken: accessToken,
-      });
-      console.log('Track ID and access token sent to backend for selected song page:', trackId, accessToken);
-  
-      // The response object will contain the information sent back from the backend
-      // You can access the data returned by the backend using response.data
-      console.log('Response from backend:', response.data);
-    } catch (error) {
-      console.error('Error sending track ID and access token to backend for selected song page:', error);
-    }
-  };
 
   const handleSelectTrack = async (trackId) => {
     // Update the selectedSong state when a track is selected
@@ -221,7 +204,7 @@ const SpotifySearch = () => {
     await fetch_song_details_in_backend(trackId, accessToken);
   
     // Use setLocation to change the URL and redirect to the SelectedSongPage
-    setLocation(`/selected-song/${trackId}`);
+    setLocation(`/get_track_info/`);
   };
 
   return (

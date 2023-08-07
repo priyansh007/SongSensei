@@ -25,30 +25,6 @@ from retrievesimilarsongs.librarysimilarsongs import *
 #import cyanite
 
 # says that this function can do handle POST requests
-
-def fetch_song_details(request):
-    if request.method == 'POST':
-        # Get the trackId and accessToken from the request body
-        track_id = request.POST.get('trackId')
-        access_token = request.POST.get('accessToken')
-
-        # Perform any actions you need with track_id and access_token
-        # For example, you can use the access_token to make a request to the Spotify API to get song details
-
-        # For demonstration purposes, let's assume we are just returning some sample data
-        song_details = {
-            'track_id': track_id,
-            'access_token': access_token,
-            'song_name': 'Sample Song',
-            'artist': 'Sample Artist',
-            'album': 'Sample Album',
-            'preview_url': 'https://sample-url.com/sample-preview.mp3',
-        }
-
-        # Return the song details in the response
-        return JsonResponse(song_details)
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=400)
     
 @api_view(["POST"])
 def track_view(request):
@@ -134,3 +110,23 @@ def upload_mp3(request):
 	else:
 		form = MP3FileForm()
 	return render(request, 'upload_mp3.html', {'form': form})
+
+@api_view(["GET"])
+def fetch_song_details(request):
+    if request.method == 'GET':
+        track_id = request.GET.get('trackId')
+        access_token = request.GET.get('accessToken')
+        print(access_token)
+        print(track_id)
+        # Do something with track_id and access_token, like fetching the song details from Spotify API
+        
+        # Assuming song_details is a dictionary containing information about the song
+        song_details = {
+            'track_id': track_id,
+            'access_token': access_token,
+            # Add other song details here
+        }
+        
+        return JsonResponse(song_details)
+    else:
+        return JsonResponse({'error': 'Invalid method'}, status=400)
