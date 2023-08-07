@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
 
 from .models import Text
 
@@ -24,6 +25,23 @@ from retrievesimilarsongs.librarysimilarsongs import *
 #import cyanite
 
 # says that this function can do handle POST requests
+    
+@api_view(["POST"])
+def track_view(request):
+    if request.method == 'POST':
+        try:
+            track_id = request.data.get('trackId')  # 'trackId' is the key used to send the track ID from the frontend
+            print(f"Received track ID from frontend: {track_id}")
+            # You can now do whatever you want with the track ID, such as saving it to your database or performing other operations.
+
+            # Return a success response to the frontend
+            return Response({'message': 'Track ID received successfully.'})
+        except Exception as e:
+            print(f"Error processing track ID: {str(e)}")
+            return Response({'error': 'Failed to process track ID.'}, status=500)
+
+    return Response({'error': 'Invalid request method.'}, status=405)
+
 @api_view(["POST"])
 def summarize_view(request):
 	
@@ -59,7 +77,6 @@ def webhook_handler(request):
 
 #def GraphQLView(request):
 #	Query.resolve_get_music_recommendations()
-
 @csrf_exempt
 def upload_mp3(request):
 	if request.method == 'POST':
@@ -96,3 +113,23 @@ def upload_mp3(request):
 	else:
 		form = MP3FileForm()
 	return render(request, 'upload_mp3.html', {'form': form})
+
+@api_view(["GET"])
+def fetch_song_details(request):
+    if request.method == 'GET':
+        track_id = request.GET.get('trackId')
+        access_token = request.GET.get('accessToken')
+        print(access_token)
+        print(track_id)
+        # Do something with track_id and access_token, like fetching the song details from Spotify API
+        
+        # Assuming song_details is a dictionary containing information about the song
+        song_details = {
+            'track_id': track_id,
+            'access_token': access_token,
+            # Add other song details here
+        }
+        
+        return JsonResponse(song_details)
+    else:
+        return JsonResponse({'error': 'Invalid method'}, status=400)

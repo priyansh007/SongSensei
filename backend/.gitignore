@@ -139,3 +139,5 @@ GitHub.sublime-settings
 
 # OSX
 .DS_Store
+
+**/node_modules
