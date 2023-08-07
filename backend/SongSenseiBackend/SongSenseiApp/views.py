@@ -82,7 +82,6 @@ def upload_mp3(request):
 	if request.method == 'POST':
 		form = MP3FileForm(request.POST, request.FILES)
 		if form.is_valid():
-
 			#saving the mp3file object (model)
 			mp3file_obj = form.save()
 			print(mp3file_obj.name)
