@@ -10,7 +10,7 @@ url = 'https://api.cyanite.ai/graphql'
 
 headers = {
     'Content-Type': 'application/json',
-    'Authorization': "Bearer " + 'CYANITE_API_KEY',  # Replace this with your actual access token if required
+    'Authorization': "Bearer " + 'CYANITE_ACCESS_TOKEN',  # Replace this with your actual access token if required
 }
 
 # Define the GraphQL mutation
@@ -35,7 +35,7 @@ Imported_Track_ID = os.getenv('SONG_ID')
 # Replace YOUR_ACCESS_TOKEN with your actual access token (if required) and provide the input data
 input_data = {
     "input": {
-        "spotifyTrackId": Imported_Track_ID,  # Replace with the actual track ID
+        "spotifyTrackId": Imported_Track_ID,
     }
 }
 # Make the GraphQL request
