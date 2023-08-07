@@ -1,3 +1,5 @@
+# Right now, this gets a song ID from .env, will need to be updated to 
+# get IDs from frontend
 import requests
 import dotenv
 import os
