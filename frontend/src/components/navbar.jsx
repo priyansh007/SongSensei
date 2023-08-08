@@ -8,7 +8,7 @@ const styles = {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: linear-gradient(135deg, #0070f3, #00b4d8); /* Gradient background color */
+    background-color: #555555; /* Charcoal background color */
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Add a box shadow for depth */
     color: #fff; /* Set the text color to white */
     font-family: Arial, sans-serif; /* Use a fallback font stack */
@@ -45,12 +45,12 @@ const styles = {
       transition: background-color 0.3s ease; /* Add a smooth transition on hover */
       &:hover {
         color: white;
-        background-color: #003049; /* Darker color when hovered */
+        background-color: #333333; /* Darker color when hovered */
       }
     }
     & .activeLink {
       /* Styles for the active link */
-      background-color: #003049; /* Darker color for active link */
+      background-color: #333333; /* Darker color for active link */
     }
   `,
 };

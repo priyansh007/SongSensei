@@ -4,7 +4,7 @@ import "./home.css";
 
 function Home() {
   return (
-    <><div style={{ backgroundColor: "#d6c099" }}>
+    <><div style={{ backgroundColor: "#d6c099"}} >
       <div className="flex items-center justify-center min-h-screen">
         <div className="my-container container mx-auto py-2">
           <div className="flex flex-col md:flex-row items-center">
