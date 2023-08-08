@@ -129,6 +129,10 @@ def get_track_info(request):
                 response = requests.get(spotify_api_url, headers=headers)
                 response_data = response.json()
 
+                # Get the track image URL
+                images = response_data.get('album', {}).get('images', [])
+                track_image_url = images[0]['url'] if images else None
+
                 # Assuming the response_data contains the track information, you can extract relevant details
                 track_info = {
                     'track_id': track_id,
@@ -138,6 +142,7 @@ def get_track_info(request):
                     'preview_url': response_data.get('preview_url'),
                     'release_date': response_data.get('album', {}).get('release_date'),
                     'popularity': response_data.get('popularity'),
+                    'track_image_url': track_image_url,  # Add the track image URL
                     # Add more track details as needed
                 }
                 return Response(track_info)

@@ -4,11 +4,21 @@ import './CustomAudioPlayer.css'; // Import your custom audio player CSS file
 const CustomAudioPlayer = ({ src }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.5); // Initial volume value
 
   const audioRef = useRef(null);
+  const progressBarRef = useRef(null);
+  const volumeControlRef = useRef(null);
 
-  // Toggle play/pause state
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.addEventListener('timeupdate', () => {
+        setCurrentTime(audioRef.current.currentTime);
+      });
+    }
+  }, []);
+
   const togglePlay = () => {
     if (isPlaying) {
       audioRef.current.pause();
@@ -18,32 +28,12 @@ const CustomAudioPlayer = ({ src }) => {
     setIsPlaying(!isPlaying);
   };
 
-  // Function to update current time smoothly
-  const smoothUpdateTime = () => {
-    if (!audioRef.current) return;
-    setCurrentTime(audioRef.current.currentTime);
-    if (isPlaying) {
-      requestAnimationFrame(smoothUpdateTime);
-    }
+  const handleTimeChange = (e) => {
+    const newTime = parseFloat(e.target.value);
+    setCurrentTime(newTime);
+    audioRef.current.currentTime = newTime;
   };
 
-  // Handle time update
-  const handleTimeUpdate = () => {
-    if (isPlaying) {
-      requestAnimationFrame(smoothUpdateTime);
-    }
-  };
-
-  const duration = audioRef.current ? audioRef.current.duration : 0;
-
-  // Format time in minutes:seconds
-  const formatTime = (time) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  };
-
-  // Handle volume change
   const handleVolumeChange = (e) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
@@ -52,20 +42,39 @@ const CustomAudioPlayer = ({ src }) => {
 
   return (
     <div className="custom-audio-player">
-      <button className="play-button" onClick={togglePlay}>
-      {isPlaying ? <i className="fas fa-pause"></i> : <i className="fas fa-play"></i>}
+      <button className="play-button2" onClick={togglePlay}>
+        {isPlaying ? (
+          <i className="fas fa-pause" style={{ color: 'white' }}></i>
+        ) : (
+          <i className="fas fa-play" style={{ color: 'white' }}></i>
+        )}
       </button>
+      <div className="time">{`${formatTime(currentTime)} / ${formatTime(
+          duration
+        )}`}</div>
       <div className="progress-container">
-      <input
+        <input
           type="range"
           min="0"
           max={duration}
           value={currentTime}
           className="progress-bar"
-          onChange={(e) => (audioRef.current.currentTime = e.target.value)}
+          onChange={handleTimeChange}
+          ref={progressBarRef}
+          style={{
+            backgroundImage: `-webkit-gradient(
+              linear,
+              left top,
+              right top,
+              color-stop(${currentTime / duration}, #1db954),
+              color-stop(${currentTime / duration}, #d3d3d3)
+            )`,
+          }}
         />
-        <div className="time">{formatTime(currentTime)}</div>
       </div>
+        <div className="volume-button">
+            <i className="fas fa-volume-up"></i>
+        </div>
       <div className="audio-container">
         <input
           type="range"
@@ -75,16 +84,37 @@ const CustomAudioPlayer = ({ src }) => {
           value={volume}
           className="volume-control"
           onChange={handleVolumeChange}
+          ref={volumeControlRef}
+          style={{
+            backgroundImage: `-webkit-gradient(
+              linear,
+              left top,
+              right top,
+              color-stop(${volume}, #1db954),
+              color-stop(${volume}, #d3d3d3)
+            )`,
+          }}
         />
       </div>
       <audio
         ref={audioRef}
         src={src}
-        onTimeUpdate={handleTimeUpdate}
-        onEnded={() => setIsPlaying(false)}
+        onTimeUpdate={() => {
+          setCurrentTime(audioRef.current.currentTime);
+        }}
+        onLoadedMetadata={() => {
+          setDuration(audioRef.current.duration);
+        }}
         volume={volume}
       />
     </div>
   );
-}
+};
+
+const formatTime = (time) => {
+  const minutes = Math.floor(time / 60);
+  const seconds = Math.floor(time % 60);
+  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+};
+
 export default CustomAudioPlayer;
