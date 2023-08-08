@@ -1,0 +1,108 @@
+
+.custom-audio-player {
+    display: flex;
+    align-items: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 15px;
+    height: 56px;
+    background-color: #000000;
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    padding-top: 16px;
+  }
+  
+  .play-button2 {
+    padding: 6px;
+    margin-right: 6px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 50%; /* Make it a circle */
+    cursor: pointer;
+    font-size: 16px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    overflow: hidden; /* Ensure the content doesn't protrude from the circle */
+  }
+
+  .volume-button {
+    padding: 6px;
+    margin-right: 6px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 50%; /* Make it a circle */
+    cursor: pointer;
+    font-size: 16px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    overflow: hidden; /* Ensure the content doesn't protrude from the circle */
+  }
+  
+  .play-button2:hover {
+    background-color: #1DB954;
+  }
+
+  .volume-button:hover {
+    background-color: #1DB954;
+  }
+  
+  .controls-container {
+    display: flex;
+    flex-direction: column; /* Display progress bar and volume control on top of each other */
+    align-items: center;
+    flex: 1; /* Allow the controls container to take up available vertical space */
+  }
+  
+  .progress-container {
+    width: 30%; /* Make the progress container take up the full width */
+    margin-right: 50px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center vertically */
+  }
+  
+  .audio-container {
+    width: 10%; /* Adjust the width of the audio container */
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center vertically */
+  }
+  
+  .progress-bar,
+  .volume-control {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    height: 2px;
+    position: relative;
+  }
+  
+  .progress-bar:hover::before,
+  .volume-control:hover::before {
+    opacity: 1;
+  }
+  
+  .progress-bar::-webkit-slider-thumb:hover,
+  .volume-control::-webkit-slider-thumb:hover {
+    background-color: transparent;
+  }
+  
+  .time {
+    padding: 6px;
+    margin: 0px 15px 0 15px; /* Move the time to the left of progress bar */
+    color: white;
+    font-size: 14px;
+  }
+  
