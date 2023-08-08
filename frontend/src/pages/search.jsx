@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, Route, useLocation, useRoute,} from 'wouter';
 import axios from 'axios';
 import config from './config';
-import SelectedSongPage from './selectedsongpage';
+import SelectedSongPage from './details';
 import './search.css'; // Import CSS file for styling
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
@@ -105,7 +105,7 @@ const SpotifySearch = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [match, params] = useLocation();
   const [location, setLocation] = useLocation(); // Add this line to get the location
-  
+
   useEffect(() => {
     // Check if the URL has the authorization code
     const urlParams = new URLSearchParams(window.location.search);
@@ -226,7 +226,7 @@ const SpotifySearch = () => {
       const song_details = await fetch_song_details(trackId, accessToken);
       console.log('Song details:', song_details);
       const songDetailsQueryParam = encodeURIComponent(JSON.stringify(song_details));
-      setLocation(`/selectedsongpage/?song_details=${songDetailsQueryParam}`);
+      setLocation(`/details/?song_details=${songDetailsQueryParam}`);
     } catch (error) {
       console.error('Error selecting track:', error);
     }
@@ -265,7 +265,7 @@ const SpotifySearch = () => {
       </div>
   
       {/* Render the SelectedSongPage component when a song is selected */}
-      <Route path="/selectedsongpage/">
+      <Route path="/details/">
         {({ params }) => <SelectedSongPage/>}
       </Route>
         

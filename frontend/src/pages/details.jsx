@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './selectedsongpage.css';
+import './details.css';
 import CustomAudioPlayer from '../components/customaudioplayer';
 import { Link } from "wouter"; // Import the Link component
 
