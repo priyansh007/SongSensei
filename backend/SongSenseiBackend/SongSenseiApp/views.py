@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 
 # Create your views here.
 
@@ -21,6 +22,9 @@ from uploadsongfile.requestupload import *
 from uploadsongfile.uploadfile import *
 from uploadsongfile.createlibrarytrack import *
 from retrievesimilarsongs.librarysimilarsongs import *
+
+import json
+import base64
 
 #import cyanite
 
@@ -88,32 +92,35 @@ def upload_mp3(request):
 			print(mp3file_obj.name)
 
 			#send graph_ql request
-			#upload_request_data = request_upload()
+			upload_request_data = request_upload()
 
 			#upload file to library
-			#upload_url = upload_request_data['uploadUrl']
-			#upload_id = upload_request_data['id']
-			#upload_file(upload_url, mp3file_obj.mp3_file)
+			upload_url = upload_request_data['uploadUrl']
+			upload_id = upload_request_data['id']
+			upload_file(upload_url, mp3file_obj.mp3_file)
 		
 			#create library track
-			#library_track_id = create_library_track(upload_id, mp3file_obj.name)
+			library_track_id = create_library_track(upload_id, mp3file_obj.name)
 
 			#request similar songs (NEED TO WAIT UNTIL SONG IS ANALYZED)
 			#library_track_id = '15029843'
-			#similar_songs_data = request_similar_from_library(library_track_id)
+			similar_songs_data = request_similar_from_library(library_track_id)
 
 			#turn raw data into spotify links
-			#spotify_links = raw_data_to_spotifylink(similar_songs_data)
+			spotify_links = raw_data_to_spotifylink(similar_songs_data)
 
 			#EXAMPLE FOR TESTING
-			spotify_links = ['http://open.spotify.com/track/7g6zQwLazU2mBXhlXjPerU', 'http://open.spotify.com/track/5GGkQIhAvpM4FfnMiygs6E', 'http://open.spotify.com/track/4ViUkL3tjDstRbeqMNZbl7', 'http://open.spotify.com/track/5qOBhOaiDhEC7IJEkBh40V', 'http://open.spotify.com/track/42H5KauYEo3xy7N4UCCezh', 'http://open.spotify.com/track/0m9m4AntGBQVd0B105Ua76', 'http://open.spotify.com/track/4mkqLLnJvIe3bVdSIvgsSk', 'http://open.spotify.com/track/2tDCgiFfAMmDcZIxUMgaz8', 'http://open.spotify.com/track/5UwJpjcfDW6AiRn98o9AwD', 'http://open.spotify.com/track/3vb4QPcgUzkkFlimwO3oWT']
+			#spotify_links = ['http://open.spotify.com/track/7g6zQwLazU2mBXhlXjPerU', 'http://open.spotify.com/track/5GGkQIhAvpM4FfnMiygs6E', 'http://open.spotify.com/track/4ViUkL3tjDstRbeqMNZbl7', 'http://open.spotify.com/track/5qOBhOaiDhEC7IJEkBh40V', 'http://open.spotify.com/track/42H5KauYEo3xy7N4UCCezh', 'http://open.spotify.com/track/0m9m4AntGBQVd0B105Ua76', 'http://open.spotify.com/track/4mkqLLnJvIe3bVdSIvgsSk', 'http://open.spotify.com/track/2tDCgiFfAMmDcZIxUMgaz8', 'http://open.spotify.com/track/5UwJpjcfDW6AiRn98o9AwD', 'http://open.spotify.com/track/3vb4QPcgUzkkFlimwO3oWT']
 
 
-			data = {"result": spotify_links}
+			data = json.dumps(spotify_links)
+            
 			#return HttpResponse(spotify_links, status=200)
-			return redirect('results', song_data=data)
-			return JsonResponse({'Similar songs to ' + mp3file_obj.name: spotify_links}, status=200)
-			return HttpResponse('form recieved successfully!', status=200)
+			encoded_data = base64.urlsafe_b64encode(data.encode()).decode()
+                        
+			return redirect(reverse('results', kwargs={'song_data': encoded_data}))
+			#return JsonResponse({'Similar songs to ' + mp3file_obj.name: spotify_links}, status=200)
+			#return HttpResponse('form recieved successfully!', status=200)
 		
 		return JsonResponse({'error': 'Form is not valid'}, status=400)
 	else:
@@ -141,16 +148,14 @@ def fetch_song_details(request):
         return JsonResponse({'error': 'Invalid method'}, status=400)
 
 @csrf_exempt
-def analysis_results(request, song_data):
-      # Get the data from the query parameter in the URL
-
-    if song_data:
-        # Process the data and render the results page
-        # ...
-        context = {
-            'song_data': song_data
+def analysis_results_view(request, song_data):
+	if song_data:
+		decoded_data = base64.urlsafe_b64decode(song_data.encode()).decode()
+		spotify_links = json.loads(decoded_data)
+		context = {
+            'song_data': spotify_links
         }
-        return render(request, 'results.html', context)
-    else:
+		return render(request, 'results.html', context)
+	else:
         # Handle the case when there is no data available
-        return JsonResponse('No song data', status=200)
+		return JsonResponse('No song data', status=200)
