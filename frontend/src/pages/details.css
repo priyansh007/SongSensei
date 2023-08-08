@@ -10,6 +10,20 @@
   height: 100vh;
 }
 
+.search-controls {
+  width: 30%;
+  height: calc(100vh - 105px);
+  background-color: #171717;
+  border-radius: 20px;
+  margin-left: 8px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: width 0.3s;
+
+  /* For Webkit browsers (Chrome, Safari, Opera) */
+  scrollbar-width: none; /* Hide scrollbar in Firefox */
+}
+
 .vertical-container-wrapper {
   flex: 1; /* Take up the remaining vertical space */
   min-width: 300px;
@@ -98,9 +112,29 @@
 
 .display-header {
   width: 100%; /* Adjust width of the display container */
-  height: 20%;
+  height: 60%;
   background-color: #171717; /* Dark grey background color */
   border-radius: 20px 20px 0 0; /* Rounded corners */
+}
+
+.display-fade {
+  width: 100%; /* Adjust width of the display container */
+  max-height: 60%;
+  height: 40%;
+  background-color: #171717; /* Dark grey background color */
+}
+
+.display-header-container {
+  width: 100%; /* Adjust width of the display container */
+  min-height: 30%;
+  height: 10%;
+  background-color: #171717; /* Dark grey background color */
+  border-radius:20px 20px 0 0; /* Rounded corners */
+}
+
+.display-body {
+  max-height: 60%;
+
 }
 
 .song-details {
@@ -142,12 +176,18 @@
 .search a,
 .home a {
   text-decoration: none;
-  color: white;
+  color: #bdbdbd; /* Slightly grey color for the links */
   font-size: 22px;
   font-weight: bold;
   display: flex;
   align-items: center;
   margin: 10px;
+  transition: color 0.3s; /* Add a smooth color transition on hover */
+}
+
+.search a:hover,
+.home a:hover {
+  color: white; /* Change to white color on hover */
 }
 
 .track-image-background {

@@ -155,16 +155,25 @@ const SelectedSongPage = () => {
         </div>
       </div>
       <div className="display" ref={displayRef}>
-        <div className='display-header'>
-          <p className="sampleheader">sampleheader</p>
+        <div className='display-header-container'>
+          <div className='display-header' style={{ backgroundColor: `rgb(${dominantColor.r},${dominantColor.g},${dominantColor.b})` }}>
+            <p className="sampleheader">sampleheader</p>
+          </div>
+          <div className='display-fade' style={gradientStyle}>
+          </div>
         </div>
-        <p className="sampletext">sampletext</p>
-        <p className="sampletext">sampletext</p>
-        <p className="sampletext">sampletext</p>
-        <p className="sampletext">sampletext</p>
-        <p className="sampletext">sampletext</p>
-        <p className="sampletext">sampletext</p>
-        {isLoadingMore && <p className="loading-message">Loading more content...</p>}
+        <div className='display-body'>
+          <p className="sampletext">sampletext</p>
+          <p className="sampletext">sampletext</p>
+          <p className="sampletext">sampletext</p>
+          <p className="sampletext">sampletext</p>
+          <p className="sampletext">sampletext</p>
+          <p className="sampletext">sampletext</p>
+          {isLoadingMore && <p className="loading-message">Loading more content...</p>}
+        </div>
+      </div>
+      <div className="search-controls" ref={displayRef}>
+        
       </div>
       <div className="audio-player">
         <div className='songplaying'>

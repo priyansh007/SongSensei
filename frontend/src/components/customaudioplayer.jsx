@@ -66,7 +66,7 @@ const CustomAudioPlayer = ({ src }) => {
               linear,
               left top,
               right top,
-              color-stop(${currentTime / duration}, #1db954),
+              color-stop(${currentTime / duration}, #1a8cff),
               color-stop(${currentTime / duration}, #d3d3d3)
             )`,
           }}
@@ -90,7 +90,7 @@ const CustomAudioPlayer = ({ src }) => {
               linear,
               left top,
               right top,
-              color-stop(${volume}, #1db954),
+              color-stop(${volume}, #1a8cff),
               color-stop(${volume}, #d3d3d3)
             )`,
           }}
