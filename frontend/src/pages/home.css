@@ -1,0 +1,13 @@
+/* home.css */
+
+.fading-text {
+    opacity: 0;
+    animation: fadeIn 4s forwards;
+  }
+  
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+  
