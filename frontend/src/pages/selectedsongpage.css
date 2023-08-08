@@ -1,32 +1,122 @@
-.selected-song-page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
-  
-  .song-info {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .song-info h2 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  .song-info p {
-    font-size: 18px;
-  }
-  
-  .song-preview {
-    width: 300px;
-  }
-  
-  audio {
-    width: 100%;
-  }
-  
-  /* Add more styles and animations as needed */
-  
+.background-container {
+  position: absolute;
+  display: flex;
+  padding: 10px;
+  padding-top: 30px;
+  background-color: #000000;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.vertical-container-wrapper {
+  flex: 1; /* Take up the remaining vertical space */
+  min-width: 300px;
+  margin-right: 8px;
+  height: calc(100vh - 140px); /* Subtract the height of the audio player and additional spacing */
+  display: flex;
+  margin-bottom: 8px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Center content vertically */
+}
+
+.display {
+  width: 100%; /* Adjust width of the display container */
+  padding: 20px;
+  height: calc(100vh - 140px);
+  background-color: #1c1c1c; /* Dark grey background color */
+  border-radius: 20px; /* Rounded corners */
+}
+
+.songcontainer {
+  width: 100%; /* Adjust width of the songcontainer */
+  padding: 20px;
+  height: calc(100vh - 150px); /* Subtract the height of audio player and additional spacing */
+  overflow-y: auto; /* Add scroll if content exceeds container height */
+  background-color: #1c1c1c; /* Dark grey background color */
+  border-radius: 20px; /* Rounded corners */
+}
+
+.navigate {
+  height: 150px;
+  overflow-y: auto;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 8px;
+  background-color: #1c1c1c;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center vertically */
+  align-items: flex-start; /* Align items to the left */
+  padding-left: 20px; /* Add left padding */
+}
+
+.song-details {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.song-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #ffffff; /* White color for all text */
+  margin-bottom: 10px;
+}
+
+.details-container {
+  background-color: #1c1c1c; /* Dark grey background color */
+  padding: 5px;
+  border-radius: 8px;
+}
+
+.artist,
+.album,
+.release-date,
+.popularity {
+  font-size: 18px;
+  color: #ffffff; /* White color for all text */
+  margin-bottom: 5px;
+}
+
+.search a,
+.home a {
+  text-decoration: none;
+  color: white;
+  font-size: 22px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  margin: 10px;
+}
+
+.audio-player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #040404; /* Darker background color */
+  padding: 20px;
+  display: flex;
+  align-items: center; /* Center audio controls vertically */
+  justify-content: space-between; /* Space components evenly */
+  color: white;
+}
+
+.audio-player audio {
+  width: calc(100% - 120px); /* Adjust the width of the audio player */
+  margin-right: 20px; /* Add spacing between audio player and volume control */
+  border-radius: 5px;
+  background-color: #040404; /* Darker background color */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  color: #ffffff; /* Text color for the audio player */
+}
+
+.no-preview {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 16px;
+  color: #ffffff; /* White color for the text */
+}

@@ -1,51 +1,71 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import './selectedsongpage.css';
+import CustomAudioPlayer from '../components/customaudioplayer';
+import { Link } from "wouter"; // Import the Link component
 
-const SelectedSongPage = ({ trackId, accessToken }) => {
-  const [trackInfo, setTrackInfo] = useState(null);
+const SelectedSongPage = () => {
+  const [songDetails, setSongDetails] = useState(null);
 
   useEffect(() => {
-    const fetchSongDetails = async () => {
-      try {
-        const response = await axios.post(
-          'http://localhost:8000/fetch_song_details/',
-          {
-            trackId: trackId,
-            accessToken: accessToken,
-          }
-        );
+    const searchParams = new URLSearchParams(window.location.search);
+    const songDetailsParam = searchParams.get('song_details');
 
-        // Assuming the backend returns the song details in the response data
-        setTrackInfo(response.data);
-      } catch (error) {
-        console.error('Error fetching song details:', error);
-      }
-    };
+    if (songDetailsParam) {
+      const decodedSongDetails = JSON.parse(decodeURIComponent(songDetailsParam));
+      setSongDetails(decodedSongDetails);
+    }
+  }, []);
 
-    fetchSongDetails();
-  }, [trackId, accessToken]);
-
-  if (!trackInfo) {
-    return <p>Loading...</p>;
+  if (!songDetails) {
+    // Render a loading message or null when songDetails is undefined or null
+    return <p className="loading-message">Loading...</p>;
   }
 
-  const { name, artist, album, preview_url } = trackInfo;
+  const { name, artists, album, preview_url, release_date, popularity } = songDetails;
 
   return (
-    <div className="selected-song-page">
-      <div className="song-info">
-        <h2>{name}</h2>
-        <p>Artist: {artist}</p>
-        <p>Album: {album}</p>
+    <div className="background-container">
+      <div className="vertical-container-wrapper">
+      <div className="navigate">
+        <div className="home">
+         <Link href="/">
+            <i className="fas fa-home home-icon" style={{ marginRight: '30px' }}></i>Home
+          </Link>
+        </div>
+        <div className="search">
+          <Link href="/search">
+            <i className="fas fa-search" style={{ marginRight: '30px' }}></i>
+            Search
+          </Link>
+        </div>
       </div>
-      <div className="song-preview">
+      <div className="songcontainer">
+        <div className="song-details">
+          <div className="details-container">
+            <h2 className="song-title">{name}</h2>
+            <div className="detail-item">
+              <p className="artist">Artists: {artists.join(', ')}</p>
+            </div>
+            <div className="detail-item">
+              <p className="album">Album: {album}</p>
+            </div>
+            <div className="detail-item">
+              <p className="release-date">Release Date: {release_date}</p>
+            </div>
+            <div className="detail-item">
+              <p className="popularity">Popularity: {popularity}/100 Score</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+      <div className="display">
+      </div>
+      <div className="audio-player">
         {preview_url ? (
-          <audio controls>
-            <source src={preview_url} type="audio/mpeg" />
-            Your browser does not support the audio element.
-          </audio>
+          <CustomAudioPlayer src={preview_url} />
         ) : (
-          <p>No preview available</p>
+          <p className="no-preview">No preview available.</p>
         )}
       </div>
     </div>

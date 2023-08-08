@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, Route, useLocation } from 'wouter';
+import { Link, Route, useLocation, useRoute,} from 'wouter';
 import axios from 'axios';
 import config from './config';
 import SelectedSongPage from './selectedsongpage';
@@ -52,6 +52,7 @@ const SearchResults = ({ results, handleTrackSelect, sendTrackToBackend }) => {
     sendTrackToBackend(trackId); // Call the sendTrackToBackend function with the track ID and accessToken
   };
 
+
   return (
     <div className="search-results">
       <div className="volume-controls">
@@ -102,10 +103,9 @@ const SpotifySearch = () => {
   const [loading, setLoading] = useState(false);
   const [accessToken, setAccessToken] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
-  const [selectedSong, setSelectedSong] = useState(null);
   const [match, params] = useLocation();
   const [location, setLocation] = useLocation(); // Add this line to get the location
-
+  
   useEffect(() => {
     // Check if the URL has the authorization code
     const urlParams = new URLSearchParams(window.location.search);
@@ -182,7 +182,6 @@ const SpotifySearch = () => {
     );
     
   };
-  
 
   const sendTrackToBackend = async (trackId) => {
     try {
@@ -194,17 +193,43 @@ const SpotifySearch = () => {
     }
   };
   
+  const fetch_song_details = async (trackId, accessToken) => {
+    console.log('error', accessToken)
+    console.log("trackid", trackId)
+    try {
+      const response = await axios.post(
+        'http://localhost:8000/get_track_info/', // Replace with the URL of your Django backend function
+        {
+          trackId: trackId,
+          accessToken: accessToken,
+        }
+      );
+  
+      // The response object will contain the information sent back from the backend
+      // You can access the data returned by the backend using response.data
+      console.log('Track ID and access token sent to backend for selected song page:', trackId, accessToken);
+      console.log('Response from backend:', response.data);
+  
+      // Assuming the backend returns the song details in response.data, you can now use the song details
+      // For example, if the backend returns a JSON object with song details, you can access them like this:
+      const fetchedsongdetails = response.data;
+      return fetchedsongdetails;
+      // Now you can use the songDetails object to display information about the song in your frontend.
+  
+    } catch (error) {
+      console.error('Error sending track ID and access token to backend for selected song page:', error);
+    }
+  };
 
   const handleSelectTrack = async (trackId) => {
-    // Update the selectedSong state when a track is selected
-    const selectedTrack = searchResults.find((track) => track.id === trackId);
-    setSelectedSong(selectedTrack);
-  
-    // Call fetch_song_details_in_the_backend with the track ID and accessToken
-    await fetch_song_details_in_backend(trackId, accessToken);
-  
-    // Use setLocation to change the URL and redirect to the SelectedSongPage
-    setLocation(`/get_track_info/`);
+    try {
+      const song_details = await fetch_song_details(trackId, accessToken);
+      console.log('Song details:', song_details);
+      const songDetailsQueryParam = encodeURIComponent(JSON.stringify(song_details));
+      setLocation(`/selectedsongpage/?song_details=${songDetailsQueryParam}`);
+    } catch (error) {
+      console.error('Error selecting track:', error);
+    }
   };
 
   return (
@@ -238,17 +263,12 @@ const SpotifySearch = () => {
           <Link href="/">Go Back</Link>
         </button>
       </div>
-
+  
       {/* Render the SelectedSongPage component when a song is selected */}
-
-      <Route path="/selected-song/:trackId">
-        {({ params }) => (
-          <SelectedSongPage trackId={params.trackId.toString()} accessToken={accessToken} />
-        )}
+      <Route path="/selectedsongpage/">
+        {({ params }) => <SelectedSongPage/>}
       </Route>
-
-
-
+        
       {/* Render the SearchResults component with the necessary props */}
       {hasSearched ? (
         searchResults.length > 0 ? (
@@ -256,7 +276,6 @@ const SpotifySearch = () => {
             results={searchResults}
             handleTrackSelect={handleSelectTrack}
             sendTrackToBackend={sendTrackToBackend}
-            setSelectedSong={setSelectedSong} // Pass setSelectedSong as a prop
           />
         ) : (
           <p>{accessToken ? 'No results found.' : 'Please log in first.'}</p>

@@ -11,7 +11,6 @@ import SelectedSongPage from './pages/selectedsongpage';
 
 
 const App = () => {
-  const [selectedSong, setSelectedSong] = useState(null);
 
   return (
       <>
@@ -22,9 +21,7 @@ const App = () => {
           <Route path="/search" component={SpotifySearch} />
           <Route path="/" component={Home} />
           <Route path="/input" component={Input}/>
-          <Route path="/selected-song/:trackId">
-            {params => <SelectedSongPage trackId={params.trackId} />}
-          </Route>
+          <Route path="/selectedsongpage/" component={SelectedSongPage}/>
         </Switch>
       </>
   );
