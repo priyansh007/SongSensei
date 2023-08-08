@@ -34,6 +34,7 @@ import base64
 def track_view(request):
     if request.method == 'POST':
         try:
+            global track_id
             track_id = request.data.get('trackId')  # 'trackId' is the key used to send the track ID from the frontend
             print(f"Received track ID from frontend: {track_id}")
             # You can now do whatever you want with the track ID, such as saving it to your database or performing other operations.
@@ -86,7 +87,6 @@ def upload_mp3(request):
 	if request.method == 'POST':
 		form = MP3FileForm(request.POST, request.FILES)
 		if form.is_valid():
-
 			#saving the mp3file object (model)
 			mp3file_obj = form.save()
 			print(mp3file_obj.name)
@@ -127,26 +127,6 @@ def upload_mp3(request):
 		form = MP3FileForm()
 	return render(request, 'upload_mp3.html', {'form': form})
 
-@api_view(["GET"])
-def fetch_song_details(request):
-    if request.method == 'GET':
-        track_id = request.GET.get('trackId')
-        access_token = request.GET.get('accessToken')
-        print(access_token)
-        print(track_id)
-        # Do something with track_id and access_token, like fetching the song details from Spotify API
-        
-        # Assuming song_details is a dictionary containing information about the song
-        song_details = {
-            'track_id': track_id,
-            'access_token': access_token,
-            # Add other song details here
-        }
-        
-        return JsonResponse(song_details)
-    else:
-        return JsonResponse({'error': 'Invalid method'}, status=400)
-
 @csrf_exempt
 def analysis_results_view(request, song_data):
 	if song_data:
@@ -159,3 +139,44 @@ def analysis_results_view(request, song_data):
 	else:
         # Handle the case when there is no data available
 		return JsonResponse('No song data', status=200)
+        
+@api_view(["POST"])
+def get_track_info(request):
+    if request.method == 'POST':
+        try:
+            access_token = request.data.get('accessToken')  # 'accessToken' is the key used to send the access token from the frontend
+            print(f"Received access token from frontend: {access_token}")
+
+            headers = {'Authorization': f'Bearer {access_token}'}
+
+            # Make a request to the Spotify API to get information about the track
+            spotify_api_url = f'https://api.spotify.com/v1/tracks/{track_id}'
+            try:
+                response = requests.get(spotify_api_url, headers=headers)
+                response_data = response.json()
+
+                # Get the track image URL
+                images = response_data.get('album', {}).get('images', [])
+                track_image_url = images[0]['url'] if images else None
+
+                # Assuming the response_data contains the track information, you can extract relevant details
+                track_info = {
+                    'track_id': track_id,
+                    'name': response_data.get('name'),
+                    'artists': [artist['name'] for artist in response_data.get('artists', [])],
+                    'album': response_data.get('album', {}).get('name'),
+                    'preview_url': response_data.get('preview_url'),
+                    'release_date': response_data.get('album', {}).get('release_date'),
+                    'popularity': response_data.get('popularity'),
+                    'track_image_url': track_image_url,  # Add the track image URL
+                    # Add more track details as needed
+                }
+                return Response(track_info)
+            except requests.exceptions.RequestException as e:
+                # Handle any errors that may occur during the request
+                print('Error fetching track information:', e)
+                return Response({'error': 'Failed to fetch track information.'}, status=500)
+
+        except Exception as e:
+            print(f"Error processing track ID: {str(e)}")
+            return Response({'error': 'Failed to process track ID.'}, status=500)

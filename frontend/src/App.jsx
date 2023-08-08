@@ -7,11 +7,10 @@ import Team from './pages/team';
 import SpotifySearch from './pages/search'; // Provide the correct path to your SpotifySearch component
 import Input from './pages/file_input';
 import './App.css';
-import SelectedSongPage from './pages/selectedsongpage';
+import SelectedSongPage from './pages/details';
 
 
 const App = () => {
-  const [selectedSong, setSelectedSong] = useState(null);
 
   return (
       <>
@@ -22,9 +21,7 @@ const App = () => {
           <Route path="/search" component={SpotifySearch} />
           <Route path="/" component={Home} />
           <Route path="/input" component={Input}/>
-          <Route path="/selected-song/:trackId">
-            {params => <SelectedSongPage trackId={params.trackId} />}
-          </Route>
+          <Route path="/details/" component={SelectedSongPage}/>
         </Switch>
       </>
   );
