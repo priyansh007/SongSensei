@@ -107,13 +107,13 @@ def upload_mp3(request):
 			similar_songs_data = request_similar_from_library(library_track_id)
 
 			#turn raw data into spotify links
-			spotify_links = raw_data_to_spotifylink(similar_songs_data)
+			spotify_ids = raw_data_to_spotifyids(similar_songs_data)
 
 			#EXAMPLE FOR TESTING
 			#spotify_links = ['http://open.spotify.com/track/7g6zQwLazU2mBXhlXjPerU', 'http://open.spotify.com/track/5GGkQIhAvpM4FfnMiygs6E', 'http://open.spotify.com/track/4ViUkL3tjDstRbeqMNZbl7', 'http://open.spotify.com/track/5qOBhOaiDhEC7IJEkBh40V', 'http://open.spotify.com/track/42H5KauYEo3xy7N4UCCezh', 'http://open.spotify.com/track/0m9m4AntGBQVd0B105Ua76', 'http://open.spotify.com/track/4mkqLLnJvIe3bVdSIvgsSk', 'http://open.spotify.com/track/2tDCgiFfAMmDcZIxUMgaz8', 'http://open.spotify.com/track/5UwJpjcfDW6AiRn98o9AwD', 'http://open.spotify.com/track/3vb4QPcgUzkkFlimwO3oWT']
 
 
-			data = json.dumps(spotify_links)
+			data = json.dumps(spotify_ids)
             
 			#return HttpResponse(spotify_links, status=200)
 			encoded_data = base64.urlsafe_b64encode(data.encode()).decode()
