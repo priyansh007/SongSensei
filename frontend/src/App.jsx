@@ -8,11 +8,13 @@ import SpotifySearch from './pages/search'; // Provide the correct path to your 
 import Input from './pages/file_input';
 import './App.css';
 import SelectedSongPage from './pages/details';
+import { AccessTokenProvider } from './AccessTokenContext'; // Import the provider
 
 
 const App = () => {
 
   return (
+    <AccessTokenProvider>
       <>
         <Navbar />
         <Switch>
@@ -24,6 +26,7 @@ const App = () => {
           <Route path="/details/" component={SelectedSongPage}/>
         </Switch>
       </>
+    </AccessTokenProvider>
   );
 }
 

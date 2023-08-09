@@ -2,6 +2,10 @@ import React, { useState, useEffect, useRef} from 'react';
 import './details.css';
 import CustomAudioPlayer from '../components/customaudioplayer';
 import { Link } from "wouter"; // Import the Link component
+import axios from 'axios';
+axios.defaults.xsrfCookieName = 'csrftoken';
+axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+import { useAccessToken } from '../AccessTokenContext'; // Import the hook
 
 const SelectedSongPage = () => {
   const [songDetails, setSongDetails] = useState(null);
@@ -11,6 +15,11 @@ const SelectedSongPage = () => {
   const displayRef = useRef(null);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const contentRef = useRef(null);
+  const [response, setResponse] = useState(null);
+  const [similarTracks, setSimilarTracks] = useState([]);
+  const { accessToken } = useAccessToken();
+  const [similarSongDetails, setSimilarSongDetails] = useState([]);
+  
 
   const loadMoreContent = () => {
     setIsLoadingMore(true);
@@ -88,7 +97,7 @@ const SelectedSongPage = () => {
     return <p className="loading-message">Loading...</p>;
   }
 
-  const { name, artists, album, preview_url, release_date, popularity, track_image_url} = songDetails;
+  const {track_id, name, artists, album, preview_url, release_date, popularity, track_image_url} = songDetails;
 
   // Adjust opacity values to control the fading effect
   const numSteps = 10; // Number of gradient steps
@@ -111,6 +120,67 @@ const SelectedSongPage = () => {
         ${gradientColors}
       ),
       #171717`,
+  };
+
+  const searchSimilarTracks = async (event) => {
+    event.preventDefault();
+    try {
+        const response = await fetch('http://localhost:8000/get_similar_tracks/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            track_id: track_id,
+            numoftracksrequested: 10
+          }
+        )
+        });
+
+        if (response.ok) {
+          const responseData = await response.json();
+          const similarTrackIds = responseData.similar_track_ids; // Adjust the key based on the response structure
+          const fetchedSimilarSongDetails = [];
+
+          for (const similarTrackId of similarTrackIds) {
+            const similarSongDetail = await fetch_song_details(similarTrackId, accessToken);
+            fetchedSimilarSongDetails.push(similarSongDetail);
+            console.log(fetchedSimilarSongDetails)
+          }
+        
+          setSimilarSongDetails(fetchedSimilarSongDetails);
+        } else {
+          console.error('Error fetching similar tracks:', response.statusText);
+        }
+        
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+  const fetch_song_details = async (trackId, accessToken) => {
+    try {
+      const response = await axios.post(
+        'http://localhost:8000/get_track_info/', // Replace with the URL of your Django backend function
+        {
+          trackId: trackId,
+          accessToken: accessToken,
+        }
+      );
+
+      // The response object will contain the information sent back from the backend
+      // You can access the data returned by the backend using response.data
+      console.log('Response from backend:', response.data);
+
+      // Assuming the backend returns the song details in response.data, you can now use the song details
+      // For example, if the backend returns a JSON object with song details, you can access them like this:
+      const fetchedsongdetails = response.data;
+      return fetchedsongdetails;
+      // Now you can use the songDetails object to display information about the song in your frontend.
+
+    } catch (error) {
+      console.error('Error sending track ID and access token to backend for selected song page:', error);
+    }
   };
 
   return (
@@ -148,32 +218,46 @@ const SelectedSongPage = () => {
                 <p className="release-date">Release Date: {release_date}</p>
               </div>
               <div className="detail-item">
-                <p className="popularity">Popularity: {popularity}/100 <i class="fas fa-fire" style={{ color: '#1a8cff', marginBottom: '4px', marginLeft: '3px'}}></i></p>
+                <p className="popularity">Popularity: {popularity}/100 <i className="fas fa-fire" style={{ color: '#1a8cff', marginBottom: '4px', marginLeft: '3px'}}></i></p>
+              </div>
+              <div className='find-similar-tracks-container'>
+                <button className='find-similar-tracks' onClick={searchSimilarTracks}>
+                  Find Similar Tracks
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div className="display" ref={displayRef}>
-        <div className='display-header-container'>
-          <div className='display-header' style={{ backgroundColor: `rgb(${dominantColor.r},${dominantColor.g},${dominantColor.b})` }}>
-            <p className="sampleheader">sampleheader</p>
-          </div>
-          <div className='display-fade' style={gradientStyle}>
-          </div>
-        </div>
-        <div className='display-body'>
-          <p className="sampletext">sampletext</p>
-          <p className="sampletext">sampletext</p>
-          <p className="sampletext">sampletext</p>
-          <p className="sampletext">sampletext</p>
-          <p className="sampletext">sampletext</p>
-          <p className="sampletext">sampletext</p>
+        <div className="display-body">
+          {similarSongDetails
+            .filter((song, index, self) => {
+              return index === self.findIndex((s) => s.name === song.name);
+            })
+            .map((similarSongDetail, index) => (
+              <div key={index} className="similar-song-detail-container">
+                <div className="similar-song-detail">
+                  <p className="similar-song-title">{similarSongDetail.name}</p>
+                  <p className="similar-song-artist">{similarSongDetail.artists.join(', ')}</p>
+                  <p className="similar-song-album">Album: {similarSongDetail.album}</p>
+                  <p className="similar-song-release">Release Date: {similarSongDetail.release_date}</p>
+                  <p className="similar-song-popularity">
+                    Popularity: {similarSongDetail.popularity}/100{' '}
+                    <i className="fas fa-fire" style={{ color: '#1a8cff', marginBottom: '4px', marginLeft: '3px' }}></i>
+                  </p>
+                  <div className="audio-player-container">
+                    {similarSongDetail.preview_url ? (
+                      <CustomAudioPlayer src={similarSongDetail.preview_url} />
+                    ) : (
+                      <p className="no-preview">No preview available.</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
           {isLoadingMore && <p className="loading-message">Loading more content...</p>}
         </div>
-      </div>
-      <div className="search-controls" ref={displayRef}>
-        
       </div>
       <div className="audio-player">
         <div className='songplaying'>
@@ -188,7 +272,7 @@ const SelectedSongPage = () => {
           <p className="no-preview">No preview available.</p>
         )}
         <div className='songpopularity'>
-          {popularity} <i class="fas fa-fire" style={{ color: '#1a8cff', marginBottom: '4px', marginLeft: '3px'}}></i>
+          {popularity} <i className="fas fa-fire" style={{ color: '#1a8cff', marginBottom: '4px', marginLeft: '3px'}}></i>
         </div>
       </div>
     </div>

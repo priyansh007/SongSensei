@@ -23,14 +23,73 @@ from uploadsongfile.createlibrarytrack import *
 from retrievesimilarsongs.librarysimilarsongs import *
 
 #import cyanite
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
+access_tokken_cyanite = os.environ.get('CYANITE_ACCESS_TOKEN')
 # says that this function can do handle POST requests
-    
+
+@api_view(["POST"])
+def get_similar_tracks(request):
+    if request.method == 'POST':
+        try:
+            track_id = request.data.get('track_id', None)
+            num_of_tracks_requested = request.data.get('numoftracksrequested', None)
+            if track_id and num_of_tracks_requested:
+                # Construct and send a GraphQL query to Cyanite API
+                query = '''
+query SimilarTracksQuery($trackId: ID!, $first: Int!) {
+  spotifyTrack(id: $trackId) {
+    __typename
+    ... on Error {
+      message
+    }
+    ... on Track {
+      id
+      similarTracks(target: { spotify: {} }, first: $first) {
+        __typename
+        ... on SimilarTracksError {
+          code
+          message
+        }
+        ... on SimilarTracksConnection {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      }
+    }
+  }
+}
+                '''
+                headers = {
+                    'Authorization': f'Bearer {access_tokken_cyanite}',  # Add the access token to the Authorization header
+                    'Content-Type': 'application/json'
+                }
+                response = requests.post('https://api.cyanite.ai/graphql', json={                    
+                    'query': query,
+                    'variables': {
+                        'trackId': track_id,
+                        'first': num_of_tracks_requested
+                    }
+                }, headers=headers)
+                
+                response_data = response.json().get('data', {}).get('spotifyTrack', {}).get('similarTracks', {}).get('edges', {})
+                similar_track_ids = [item['node']['id'] for item in response_data]
+                print(similar_track_ids)
+                return JsonResponse({'similar_track_ids': similar_track_ids}, status=200)
+            else:
+                return JsonResponse({'error': 'Missing track_id or numoftracksrequested'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+        
 @api_view(["POST"])
 def track_view(request):
     if request.method == 'POST':
         try:
-            global track_id
             track_id = request.data.get('trackId')  # 'trackId' is the key used to send the track ID from the frontend
             print(f"Received track ID from frontend: {track_id}")
             # You can now do whatever you want with the track ID, such as saving it to your database or performing other operations.
@@ -119,7 +178,7 @@ def get_track_info(request):
     if request.method == 'POST':
         try:
             access_token = request.data.get('accessToken')  # 'accessToken' is the key used to send the access token from the frontend
-            print(f"Received access token from frontend: {access_token}")
+            track_id = request.data.get('trackId')  # 'trackId' is the key used to send the track ID from the frontend
 
             headers = {'Authorization': f'Bearer {access_token}'}
 
@@ -154,3 +213,4 @@ def get_track_info(request):
         except Exception as e:
             print(f"Error processing track ID: {str(e)}")
             return Response({'error': 'Failed to process track ID.'}, status=500)
+        

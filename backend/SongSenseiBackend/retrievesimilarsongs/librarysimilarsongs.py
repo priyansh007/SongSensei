@@ -75,6 +75,7 @@ def request_similar_from_library(track_id):
             
             time.sleep(5)
         
+        print("list", list_of_songs)
         return list_of_songs
     else:
         print("Request failed with status code:", response.status_code)
