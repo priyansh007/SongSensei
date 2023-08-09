@@ -1,5 +1,3 @@
-Dummy Text
-
 Virtual Environment Name: SongSenseiVirtualEnv
 
 Demonstration for integrating Cyanite:
