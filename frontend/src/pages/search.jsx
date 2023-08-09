@@ -255,11 +255,6 @@ const SpotifySearch = () => {
           </button>
         </div>
       </div>
-      <div className="mt-4">
-        <button className="px-4 py-2 bg-blue-500 text-white rounded-lg">
-          <Link href="/">Go Back</Link>
-        </button>
-      </div>
   
       {/* Render the SelectedSongPage component when a song is selected */}
       <Route path="/details/">

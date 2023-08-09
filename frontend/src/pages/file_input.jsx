@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useAccessToken } from '../AccessTokenContext'; // Import the hook
 import axios from 'axios';
 import config from './config';
-
 function Input() {
   const [responseData, setResponseData] = useState(null);
   const { accessToken } = useAccessToken();

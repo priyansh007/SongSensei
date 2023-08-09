@@ -19,6 +19,7 @@ const SelectedSongPage = () => {
   const [similarTracks, setSimilarTracks] = useState([]);
   const { accessToken } = useAccessToken();
   const [similarSongDetails, setSimilarSongDetails] = useState([]);
+  const [searchingSimilarTracks, setSearchingSimilarTracks] = useState(false); // New state variable
   
 
   const loadMoreContent = () => {
@@ -124,6 +125,7 @@ const SelectedSongPage = () => {
 
   const searchSimilarTracks = async (event) => {
     event.preventDefault();
+    setSearchingSimilarTracks(true);
     try {
         const response = await fetch('http://localhost:8000/get_similar_tracks/', {
           method: 'POST',
@@ -156,6 +158,7 @@ const SelectedSongPage = () => {
     } catch (error) {
         console.error(error);
     }
+    setSearchingSimilarTracks(false);
 };
 
   const fetch_song_details = async (trackId, accessToken) => {
@@ -231,37 +234,41 @@ const SelectedSongPage = () => {
       </div>
       <div className="display" ref={displayRef}>
         <div className="display-body">
-          {similarSongDetails
-            .filter((song, index, self) => {
-              return index === self.findIndex((s) => s.name === song.name);
-            })
-            .map((similarSongDetail, index) => (
-              <div key={index} className="similar-song-detail-container">
-                <div className="similar-song-detail">
-                  <p className="similar-song-title">{similarSongDetail.name}</p>
-                  <p className="similar-song-artist">{similarSongDetail.artists.join(', ')}</p>
-                  <p className="similar-song-album">Album: {similarSongDetail.album}</p>
-                  <p className="similar-song-release">Release Date: {similarSongDetail.release_date}</p>
-                  <p className="similar-song-popularity">
-                    Popularity: {similarSongDetail.popularity}/100{' '}
-                    <i className="fas fa-fire" style={{ color: '#1a8cff', marginBottom: '4px', marginLeft: '3px' }}></i>
-                  </p>
-                  <div className="audio-player-container">
-                    {similarSongDetail.preview_url ? (
-                      <CustomAudioPlayer src={similarSongDetail.preview_url} />
-                    ) : (
-                      <p className="no-preview">No preview available.</p>
-                    )}
+        {searchingSimilarTracks ? ( // Display loading message while searching
+            <p className="instructions">Loading...</p>
+          ) : similarSongDetails.length === 0 ? (
+            <p className="instructions">Click Find Similar Tracks to get started.</p>
+          ) : (
+            similarSongDetails
+              .filter((song, index, self) => index === self.findIndex((s) => s.name === song.name))
+              .map((similarSongDetail, index) => (
+                <div key={index} className="similar-song-detail-container">
+                  <div className="similar-song-detail">
+                    <p className="similar-song-title">{similarSongDetail.name}</p>
+                    <p className="similar-song-artist">{similarSongDetail.artists.join(', ')}</p>
+                    <p className="similar-song-album">Album: {similarSongDetail.album}</p>
+                    <p className="similar-song-release">Release Date: {similarSongDetail.release_date}</p>
+                    <p className="similar-song-popularity">
+                      Popularity: {similarSongDetail.popularity}/100{' '}
+                      <i className="fas fa-fire" style={{ color: '#1a8cff', marginBottom: '4px', marginLeft: '3px' }}></i>
+                    </p>
+                    <div className="audio-player-container">
+                      {similarSongDetail.preview_url ? (
+                        <CustomAudioPlayer src={similarSongDetail.preview_url} />
+                      ) : (
+                        <p className="no-preview">No preview available.</p>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+          )}
           {isLoadingMore && <p className="loading-message">Loading more content...</p>}
         </div>
       </div>
       <div className="audio-player">
         <div className='songplaying'>
-          <h1>{name}</h1> 
+          <h1>{name}</h1>
         </div>
         <div className='songartist'>
           <p>[{artists}]</p>
@@ -277,6 +284,6 @@ const SelectedSongPage = () => {
       </div>
     </div>
   );
-};  
+};
 
 export default SelectedSongPage;
