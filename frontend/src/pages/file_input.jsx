@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { useAccessToken } from '../AccessTokenContext'; // Import the hook
+import axios from 'axios';
 
 function Input() {
   const [responseData, setResponseData] = useState(null);
+  const { accessToken } = useAccessToken();
 
   const handleFileInput = (event) => {
     const file = event.target.files[0];
@@ -27,17 +30,49 @@ function Input() {
           body: formData,
         });
 
+        const fetchedsimilarids = [];
         if (response.ok) {
           const data = await response.json();
           console.log('Server response:', data);
-
-          setResponseData(data); // Store the response data in state
+          for (const id of data.spotify_ids) {
+            const spotify_ids_details = await fetch_song_details(id, accessToken);
+            fetchedsimilarids.push(spotify_ids_details);
+            console.log(fetchedsimilarids)
+          }
+          setResponseData(fetchedsimilarids); // Store the response data in state
         } else {
           console.error('Server responded with status:', response.status);
         }
       } catch (error) {
         console.error('Error uploading file:', error);
       }
+    }
+  };
+
+  const fetch_song_details = async (trackId, accessToken) => {
+    try {
+      const response = await axios.post(
+        'http://localhost:8000/get_track_info/', // Replace with the URL of your Django backend function
+        {
+          trackId: trackId,
+          accessToken: accessToken,
+        }
+      );
+      console.log(trackId)
+      console.log(accessToken)
+
+      // The response object will contain the information sent back from the backend
+      // You can access the data returned by the backend using response.data
+      console.log('Response from backend:', response.data);
+
+      // Assuming the backend returns the song details in response.data, you can now use the song details
+      // For example, if the backend returns a JSON object with song details, you can access them like this:
+      const fetchedsongdetails = response.data;
+      return fetchedsongdetails;
+      // Now you can use the songDetails object to display information about the song in your frontend.
+
+    } catch (error) {
+      console.error('Error sending track ID and access token to backend for selected song page:', error);
     }
   };
 
