@@ -92,14 +92,14 @@ def request_similar_from_library(track_id):
 
 # THIS FUNCTION TAKES IN THE OUTPUT OF request_similar_from_library()
 # RETURNS AN ARRAY WITH THE SPOTIFY LINKS
-def raw_data_to_spotifylink(raw_data):
-    spotifylinks = []
+def raw_data_to_spotifyids(raw_data):
+    spotifyids = []
     for i in range(0, len(raw_data)):
         
-        # appends the actual track id to the list (along with making it a spotify url)
+        # appends the actual track id to the list
         try:
-            spotifylinks.append('http://open.spotify.com/track/' + raw_data[i]['node']['id'])
+            spotifyids.append(raw_data[i]['node']['id'])
         except:
-            spotifylinks.append('Error retrieving this song.')
+            spotifyids.append('Error retrieving this song.')
 
-    return spotifylinks
+    return spotifyids
