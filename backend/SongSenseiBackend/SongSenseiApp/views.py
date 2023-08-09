@@ -143,49 +143,42 @@ def webhook_handler(request):
 #	Query.resolve_get_music_recommendations()
 @csrf_exempt
 def upload_mp3(request):
-	if request.method == 'POST':
-		form = MP3FileForm(request.POST, request.FILES)
-		if form.is_valid():
-			#saving the mp3file object (model)
-			mp3file_obj = form.save()
-			print(mp3file_obj.name)
+    if request.method == 'POST':
+        form = MP3FileForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Saving the mp3file object (model)
+            mp3file_obj = form.save()
+            print(mp3file_obj.name)
 
-			#send graph_ql request
-			upload_request_data = request_upload()
+            # Send GraphQL request
+            upload_request_data = request_upload()
 
-			#upload file to library
-			upload_url = upload_request_data['uploadUrl']
-			upload_id = upload_request_data['id']
-			upload_file(upload_url, mp3file_obj.mp3_file)
-		
-			#create library track
-			library_track_id = create_library_track(upload_id, mp3file_obj.name)
+            # Upload file to library
+            upload_url = upload_request_data['uploadUrl']
+            upload_id = upload_request_data['id']
+            upload_file(upload_url, mp3file_obj.mp3_file)
 
-			#request similar songs (NEED TO WAIT UNTIL SONG IS ANALYZED)
-			#library_track_id = '15029843'
-			similar_songs_data = request_similar_from_library(library_track_id)
+            # Create library track
+            library_track_id = create_library_track(upload_id, mp3file_obj.name)
 
-			#turn raw data into spotify links
-			spotify_ids = raw_data_to_spotifyids(similar_songs_data)
+            # Request similar songs (NEED TO WAIT UNTIL SONG IS ANALYZED)
+            # library_track_id = '15029843'
+            similar_songs_data = request_similar_from_library(library_track_id)
 
-			#EXAMPLE FOR TESTING
-			#spotify_ids = ['7g6zQwLazU2mBXhlXjPerU', '5GGkQIhAvpM4FfnMiygs6E', '4ViUkL3tjDstRbeqMNZbl7', '5qOBhOaiDhEC7IJEkBh40V', 'http://open.spotify.com/track/42H5KauYEo3xy7N4UCCezh', 'http://open.spotify.com/track/0m9m4AntGBQVd0B105Ua76', 'http://open.spotify.com/track/4mkqLLnJvIe3bVdSIvgsSk', 'http://open.spotify.com/track/2tDCgiFfAMmDcZIxUMgaz8', 'http://open.spotify.com/track/5UwJpjcfDW6AiRn98o9AwD', 'http://open.spotify.com/track/3vb4QPcgUzkkFlimwO3oWT']
-            
-			#return HttpResponse(spotify_links, status=200)
+            # Turn raw data into Spotify links
+            spotify_ids = raw_data_to_spotifyids(similar_songs_data)
+            print(spotify_ids)
 
-			#for putting in the redirect url (not needed)
-			data = json.dumps(spotify_ids)
-			encoded_data = base64.urlsafe_b64encode(data.encode()).decode()
-            
+            # EXAMPLE FOR TESTING
+            # spotify_ids = ['7g6zQwLazU2mBXhlXjPerU', '5GGkQIhAvpM4FfnMiygs6E', ...]
 
-			#return redirect(reverse('results', kwargs={'song_data': encoded_data}))
-			return JsonResponse({'Similar songs to ' + mp3file_obj.name: spotify_ids}, status=200)
-			#return HttpResponse('form recieved successfully!', status=200)
-		
-		return JsonResponse({'error': 'Form is not valid'}, status=400)
-	else:
-		form = MP3FileForm()
-	return render(request, 'upload_mp3.html', {'form': form})
+            return JsonResponse({'spotify_ids': spotify_ids}, status=200)
+            # return HttpResponse('form received successfully!', status=200)
+        
+        return JsonResponse({'error': 'Form is not valid'}, status=400)
+    else:
+        form = MP3FileForm()
+    return render(request, 'upload_mp3.html', {'form': form})
 
 @csrf_exempt
 def analysis_results_view(request, song_data):

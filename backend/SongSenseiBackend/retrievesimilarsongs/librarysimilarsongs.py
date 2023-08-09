@@ -75,7 +75,6 @@ def request_similar_from_library(track_id):
             
             time.sleep(5)
         
-        print("list", list_of_songs)
         return list_of_songs
     else:
         print("Request failed with status code:", response.status_code)
@@ -93,13 +92,13 @@ def request_similar_from_library(track_id):
 # THIS FUNCTION TAKES IN THE OUTPUT OF request_similar_from_library()
 # RETURNS AN ARRAY WITH THE SPOTIFY LINKS
 def raw_data_to_spotifyids(raw_data):
-    spotifyids = []
+    spotifylinks = []
     for i in range(0, len(raw_data)):
         
-        # appends the actual track id to the list
+        # appends the actual track id to the list (along with making it a spotify url)
         try:
-            spotifyids.append(raw_data[i]['node']['id'])
+            spotifylinks.append(raw_data[i]['node']['id'])
         except:
-            spotifyids.append('Error retrieving this song.')
+            spotifylinks.append('Error retrieving this song.')
 
-    return spotifyids
+    return spotifylinks
