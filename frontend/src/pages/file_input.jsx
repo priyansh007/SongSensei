@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAccessToken } from '../AccessTokenContext'; // Import the hook
 import axios from 'axios';
+import config from './config';
 
 function Input() {
   const [responseData, setResponseData] = useState(null);
@@ -13,6 +14,13 @@ function Input() {
       console.log('Selected file:', file);
       // You can perform any additional actions with the selected file here.
     }
+  };
+
+  const handleLogin = () => {
+  window.location.href = `https://accounts.spotify.com/authorize?client_id=${config.clientId}&response_type=code&redirect_uri=${encodeURIComponent(
+    config.redirectUri
+  )}&scope=user-library-read`;
+    
   };
 
   const handleAnalyzeButtonClick = async (event) => {
@@ -99,6 +107,14 @@ function Input() {
         className="mt-4 w-full max-w-sm bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
       >
         Analyze
+      </button>
+
+      <button
+            className="px-4 py-2 mt-4 bg-green-500 text-white rounded-lg flex items-center"
+            onClick={handleLogin}
+          >
+            <img src="src/images/spotify.png" alt="Spotify Logo" className="w-6 h-6 mr-2" />
+            Login with Spotify
       </button>
 
       {/* Display similar song information */}
