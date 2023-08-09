@@ -10,18 +10,29 @@
   height: 100vh;
 }
 
-.search-controls {
-  width: 30%;
-  height: calc(100vh - 105px);
-  background-color: #171717;
-  border-radius: 20px;
-  margin-left: 8px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  transition: width 0.3s;
+.find-similar-tracks-container {
+  display: flex;
+  justify-content: center; /* Horizontally center the button */
+  margin-top: 20px; /* Add some margin for spacing */
+}
 
-  /* For Webkit browsers (Chrome, Safari, Opera) */
-  scrollbar-width: none; /* Hide scrollbar in Firefox */
+.find-similar-tracks {
+  justify-content: center;
+  border-radius: 20px;
+  background-color: #000000;
+  border: 2px solid;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.find-similar-tracks:hover {
+  background-color: #f0f0f0;
+  border-radius: 20px;
+  border: 2px solid black;
+  color: #333;
 }
 
 .vertical-container-wrapper {
@@ -134,7 +145,68 @@
 
 .display-body {
   max-height: 60%;
+  color: white; /* Set text color to white */
+}
 
+.similar-song-detail-container {
+  margin: 10px;
+  padding: 30px;
+  background-color: #171717;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.similar-song-detail-container:hover {
+  margin: 20px;
+  padding: 20px;
+  background-color: #2e2e2e;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.audio-player-container {
+  margin-top: 10px;
+  padding: 5px; /* Add some padding to separate audio player from other content */
+  background-color: #000000; /* Set the background color for the audio player */
+  border-radius: 20px;
+  border: 2px solid #2e2e2e;
+}
+
+/* Style the audio player controls */
+.audio-player-container audio {
+  width: 100%;
+  max-width: 300px;
+  display: block;
+  margin-top: 5px;
+  padding: 10px; /* Add padding to the audio player */
+}
+
+.similar-song-detail {
+  font-size: 16px;
+  margin-bottom: 0px;
+}
+
+.similar-song-detail p {
+  margin: 0;
+}
+
+.similar-song-title {
+  font-size: 20px; /* Adjust the font size as needed */
+  font-weight: bold; /* Make the title bold */
+  margin-bottom: 5px; /* Add a bit of spacing below the title */
+}
+
+.similar-song-artist {
+  font-size: 14px; /* Adjust the font size as needed */
+  margin-bottom: 3px; /* Add a bit of spacing below the artist name */
+}
+
+.similar-song-album,
+.similar-song-release,
+.similar-song-popularity {
+  font-size: 12px; /* Adjust the font size as needed */
+  color: #ffffff; /* Add a gray color for these details */
+  margin: 2px 0; /* Add a bit of spacing top and bottom */
 }
 
 .song-details {

@@ -6,6 +6,7 @@ import SelectedSongPage from './details';
 import './search.css'; // Import CSS file for styling
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+import { useAccessToken } from '../AccessTokenContext';
 
 const SearchResults = ({ results, handleTrackSelect, sendTrackToBackend }) => {
   const [currentTrack, setCurrentTrack] = useState(null);
@@ -101,7 +102,7 @@ const SpotifySearch = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [accessToken, setAccessToken] = useState('');
+  const { accessToken, updateAccessToken } = useAccessToken();;
   const [hasSearched, setHasSearched] = useState(false);
   const [match, params] = useLocation();
   const [location, setLocation] = useLocation(); // Add this line to get the location
@@ -122,11 +123,11 @@ const SpotifySearch = () => {
       const response = await axios.post('http://localhost:5000/callback', {
         code: code, // Send the code in the request body
       });
-  
+
       if (response.status === 200) {
         const accessToken = response.data.access_token;
         console.log("Received access token:", accessToken);
-        setAccessToken(accessToken); // Save the access token in state
+        updateAccessToken(accessToken); // Update the access token using the context function
         setHasSearched(false); // Reset hasSearched state to false to clear previous search results
       } else {
         console.error('Error: Unexpected status code', response.status);
@@ -135,7 +136,7 @@ const SpotifySearch = () => {
       console.error('Error fetching access token:', error);
     }
   };
-  
+
   const handleSearchQuery = async () => {
     try {
       setLoading(true);
@@ -174,12 +175,9 @@ const SpotifySearch = () => {
 
   const handleLogin = () => {
     setHasSearched(false); // Reset hasSearched state to false when the user clicks "Login with Spotify"
-    window.open(
-      `https://accounts.spotify.com/authorize?client_id=${config.clientId}&response_type=code&redirect_uri=${encodeURIComponent(
-        config.redirectUri
-      )}&scope=user-library-read`,
-      '_blank'
-    );
+  window.location.href = `https://accounts.spotify.com/authorize?client_id=${config.clientId}&response_type=code&redirect_uri=${encodeURIComponent(
+    config.redirectUri
+  )}&scope=user-library-read`;
     
   };
 
@@ -187,7 +185,6 @@ const SpotifySearch = () => {
     try {
       // Make an HTTP POST request to your backend with the selected track ID in the request body
       await axios.post('http://localhost:8000/track/', { trackId});
-      console.log('Track ID sent to backend for track:', trackId);
     } catch (error) {
       console.error('Error sending track ID and access token to backend for track:', error);
     }
@@ -200,7 +197,7 @@ const SpotifySearch = () => {
       const response = await axios.post(
         'http://localhost:8000/get_track_info/', // Replace with the URL of your Django backend function
         {
-          trackId: trackId,
+          trackId: trackId.id,
           accessToken: accessToken,
         }
       );
