@@ -5,6 +5,7 @@ import axios from 'axios';
 function Input() {
   const [responseData, setResponseData] = useState(null);
   const { accessToken } = useAccessToken();
+  console.log("igot", accessToken)
 
   const handleFileInput = (event) => {
     const file = event.target.files[0];
@@ -18,6 +19,7 @@ function Input() {
     event.preventDefault();
     const fileInput = document.getElementById('fileInput');
     const file = fileInput.files[0];
+    console.log("handlebutton accesstoken", accessToken)
 
     if (file) {
       const formData = new FormData();
@@ -58,8 +60,8 @@ function Input() {
           accessToken: accessToken,
         }
       );
-      console.log(trackId)
-      console.log(accessToken)
+      console.log("trackid:",trackId)
+      console.log("accesstoken:",accessToken)
 
       // The response object will contain the information sent back from the backend
       // You can access the data returned by the backend using response.data
@@ -79,10 +81,10 @@ function Input() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-start pt-20">
       <div className="w-full max-w-sm p-6 bg-white rounded shadow-md">
+        {/* File input */}
         <label htmlFor="fileInput" className="block text-gray-700 font-bold mb-2">
           Choose a file:
         </label>
-
         <input
           type="file"
           id="fileInput"
@@ -91,6 +93,7 @@ function Input() {
         />
       </div>
 
+      {/* Analyze button */}
       <button
         onClick={handleAnalyzeButtonClick}
         className="mt-4 w-full max-w-sm bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -98,10 +101,21 @@ function Input() {
         Analyze
       </button>
 
+      {/* Display similar song information */}
+      {/* Display similar song information */}
       {responseData && (
         <div className="mt-4 w-full max-w-sm bg-blue-200 p-4 rounded shadow-md">
           <h2 className="text-lg font-bold mb-2">Response Data:</h2>
-          <pre>{JSON.stringify(responseData, null, 2)}</pre>
+          {responseData.map((song, index) => (
+            <div key={index} className="mb-4">
+              <h3 className="font-semibold">{`Similar Song ${index + 1}`}</h3>
+              <p><strong>Track ID:</strong> {song.track_id}</p>
+              <p><strong>Name:</strong> {song.name}</p>
+              <p><strong>Artists:</strong> {song.artists.join(', ')}</p>
+              <p><strong>Album:</strong> {song.album}</p>
+              {/* Add more information here */}
+            </div>
+          ))}
         </div>
       )}
     </div>
