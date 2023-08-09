@@ -1,3 +1,6 @@
+.body {
+  backgroundColor: "#d6c099"
+}
 .background-container {
   position: absolute;
   display: flex;

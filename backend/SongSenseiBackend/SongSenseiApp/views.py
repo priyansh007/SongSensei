@@ -233,4 +233,35 @@ def get_track_info(request):
         except Exception as e:
             print(f"Error processing track ID: {str(e)}")
             return Response({'error': 'Failed to process track ID.'}, status=500)
-        
+
+@api_view(["POST"])
+def callback(request):
+    if request.method == 'POST':
+        code = request.data.get('code')
+
+        # Log the received code
+        print('Received code:', code)
+
+        try:
+            token_response = requests.post(
+                'https://accounts.spotify.com/api/token',
+                data={
+                    'grant_type': 'authorization_code',
+                    'code': code,
+                    'redirect_uri': os.environ.get('REDIRECT_URI'),
+                },
+                headers={
+                    'Authorization': 'Basic ' + base64.b64encode(
+                        (os.environ.get('CLIENT_ID') + ':' + os.environ.get('CLIENT_SECRET')).encode()
+                    ).decode()
+                }
+            )
+
+            access_token = token_response.json().get('access_token')
+            return Response({'access_token': access_token})  # Return the access token here
+
+        except Exception as e:
+            print('Error exchanging authorization code for access token:', e)
+            return Response({'error': 'Server Error'}, status=500)
+
+    return Response({'error': 'Invalid Request'}, status=400)

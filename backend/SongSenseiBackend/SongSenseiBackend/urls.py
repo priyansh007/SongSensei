@@ -25,5 +25,6 @@ urlpatterns = [
     path('upload/', upload_mp3, name='upload_mp3'),
     path('track/', track_view, name='track_view'),
     path('get_track_info/', get_track_info, name='get_track_info'),
+    path('callback/', callback, name='callback'),
     path('get_similar_tracks/', get_similar_tracks, name='get_similar_tracks')
 ]
