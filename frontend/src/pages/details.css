@@ -1,3 +1,6 @@
+.body {
+  backgroundColor: "#d6c099"
+}
 .background-container {
   position: absolute;
   display: flex;
@@ -52,6 +55,7 @@
 .display {
   width: 100%;
   height: calc(100vh - 105px);
+  position: relative; /* Ensure the container serves as the reference for absolute positioning */
   background-color: #171717;
   border-radius: 20px;
   overflow-y: auto;
@@ -146,6 +150,15 @@
 .display-body {
   max-height: 60%;
   color: white; /* Set text color to white */
+}
+
+.instructions {
+  font-size: 40px;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .similar-song-detail-container {

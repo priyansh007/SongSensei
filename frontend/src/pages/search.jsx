@@ -106,6 +106,7 @@ const SpotifySearch = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [match, params] = useLocation();
   const [location, setLocation] = useLocation(); // Add this line to get the location
+  const [accessTokenFetched, setAccessTokenFetched] = useState(false);
 
   useEffect(() => {
     // Check if the URL has the authorization code
@@ -119,21 +120,23 @@ const SpotifySearch = () => {
   }, []);
 
   const getAccessToken = async (code) => {
-    try {
-      const response = await axios.post('http://localhost:5000/callback', {
-        code: code, // Send the code in the request body
-      });
+    if (!accessTokenFetched) {
+      try {
+        const response = await axios.post(
+          'http://localhost:8000/callback/',
+          { code: code },
+          { headers: { 'Content-Type': 'application/json' } }
+        );
 
-      if (response.status === 200) {
-        const accessToken = response.data.access_token;
-        console.log("Received access token:", accessToken);
-        updateAccessToken(accessToken); // Update the access token using the context function
-        setHasSearched(false); // Reset hasSearched state to false to clear previous search results
-      } else {
-        console.error('Error: Unexpected status code', response.status);
+        if (response.status === 200) {
+          const { access_token } = response.data;
+          updateAccessToken(access_token);
+        } else {
+          console.error('Error: Unexpected status code', response.status);
+        }
+      } catch (error) {
+        console.error('Error exchanging authorization code for access token:', error);
       }
-    } catch (error) {
-      console.error('Error fetching access token:', error);
     }
   };
 
@@ -231,7 +234,7 @@ const SpotifySearch = () => {
 
   return (
     <div className="text-center mt-20">
-      <h1 className="text-4xl font-bold text-slate-600 font-montserrat">
+      <h1 className="text-4xl font-bold text-slate-600 font-montserrat text-black">
         Spotify Song Search
       </h1>
       <div className="mt-6">
@@ -254,11 +257,6 @@ const SpotifySearch = () => {
             Login with Spotify
           </button>
         </div>
-      </div>
-      <div className="mt-4">
-        <button className="px-4 py-2 bg-blue-500 text-white rounded-lg">
-          <Link href="/">Go Back</Link>
-        </button>
       </div>
   
       {/* Render the SelectedSongPage component when a song is selected */}
