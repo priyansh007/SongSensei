@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './CustomAudioPlayer.css'; // Import your custom audio player CSS file
+import './customaudioplayer.css'; // Import your custom audio player CSS file
 
 const CustomAudioPlayer = ({ src }) => {
   const [isPlaying, setIsPlaying] = useState(false);
