@@ -148,7 +148,8 @@ def upload_mp3(request):
         if form.is_valid():
             # Saving the mp3file object (model)
             mp3file_obj = form.save()
-            print(mp3file_obj.name)
+            filename = mp3file_obj.name
+            print(filename)
 
             # Send GraphQL request
             upload_request_data = request_upload()
@@ -159,7 +160,7 @@ def upload_mp3(request):
             upload_file(upload_url, mp3file_obj.mp3_file)
 
             # Create library track
-            library_track_id = create_library_track(upload_id, mp3file_obj.name)
+            library_track_id = create_library_track(upload_id, filename)
 
             # Request similar songs (NEED TO WAIT UNTIL SONG IS ANALYZED)
             # library_track_id = '15029843'
@@ -170,7 +171,7 @@ def upload_mp3(request):
             print(spotify_ids)
 
             # EXAMPLE FOR TESTING
-            # spotify_ids = ['7g6zQwLazU2mBXhlXjPerU', '5GGkQIhAvpM4FfnMiygs6E', ...]
+            #spotify_ids = ['7g6zQwLazU2mBXhlXjPerU', '5GGkQIhAvpM4FfnMiygs6E']
 
             return JsonResponse({'spotify_ids': spotify_ids}, status=200)
             # return HttpResponse('form received successfully!', status=200)
