@@ -130,7 +130,10 @@ const SpotifySearch = () => {
 
         if (response.status === 200) {
           const { access_token } = response.data;
-          updateAccessToken(access_token);
+          if (access_token!=null){
+            updateAccessToken(access_token);
+          }
+          
         } else {
           console.error('Error: Unexpected status code', response.status);
         }
