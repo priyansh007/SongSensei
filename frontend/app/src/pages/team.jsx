@@ -49,6 +49,24 @@ function Team() {
             <p className="font-semibold" style={{ marginTop: "10px", color: "#678398", fontWeight: "500" }}>Junior</p>
           </div>
         </div>
+        <div className="container mx-auto">
+          <div style={{ padding: "45px" }}>
+            <h1 style={{ fontSize: "48px", fontFamily: "Inter, sans-serif", color: "#000000", marginBottom: "48px", fontWeight: "700" }}>
+              Mentor
+            </h1>
+            <p style={{ fontSize: "16px", fontFamily: "Inter, sans-serif", color: "#0A2A42", fontWeight: "400" }}>
+              Teacher who guided students on crafting this end to end solution.
+            </p>
+          </div>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "center", paddingBottom: "128px" }}>
+          <div className="bg-white border border-gray-300 shadow-md p-4 rounded-lg mx-4 flex flex-col justify-center items-center" style={{ width: "356px", height: "123px" }}>
+            <h2 className="font-semibold" style={{ fontSize: "32px", fontFamily: "Inter, sans-serif", color: "#0A2A42", fontWeight: "700" }}>Priyansh Zalavadiya</h2>
+            <p className="font-semibold" style={{ marginTop: "10px", color: "#678398", fontWeight: "500" }}>Grad Student</p>
+          </div>
+        </div>
+
       </div>
     </div>
   );

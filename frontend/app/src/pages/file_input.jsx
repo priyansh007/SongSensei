@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAccessToken } from '../AccessTokenContext'; // Import the hook
 import axios from 'axios';
 import config from './config';
+import logo1 from "../images/spotify.png";
 function Input() {
   const [responseData, setResponseData] = useState(null);
   const { accessToken } = useAccessToken();
@@ -112,7 +113,7 @@ function Input() {
             className="px-4 py-2 mt-4 bg-green-500 text-white rounded-lg flex items-center"
             onClick={handleLogin}
           >
-            <img src="src/images/spotify.png" alt="Spotify Logo" className="w-6 h-6 mr-2" />
+            <img src={logo1} alt="Spotify Logo" className="w-6 h-6 mr-2" />
             Login with Spotify
       </button>
 

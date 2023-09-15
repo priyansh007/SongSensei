@@ -7,6 +7,7 @@ import './search.css'; // Import CSS file for styling
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 import { useAccessToken } from '../AccessTokenContext';
+import logo1 from "../images/spotify.png";
 
 const SearchResults = ({ results, handleTrackSelect, sendTrackToBackend }) => {
   const [currentTrack, setCurrentTrack] = useState(null);
@@ -256,7 +257,7 @@ const SpotifySearch = () => {
             className="px-4 py-2 mt-4 bg-green-500 text-white rounded-lg flex items-center"
             onClick={handleLogin}
           >
-            <img src="src/images/spotify.png" alt="Spotify Logo" className="w-6 h-6 mr-2" />
+            <img src={logo1} alt="Spotify Logo" className="w-6 h-6 mr-2" />
             Login with Spotify
           </button>
         </div>
