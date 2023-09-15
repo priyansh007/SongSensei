@@ -1,6 +1,9 @@
 import React from "react";
 import { Link } from "wouter";
 import "./home.css";
+import logo1 from "../images/download.jpg";
+import logo2 from "../images/playlist.png";
+import logo3 from "../images/technology.png";
 
 function Home() {
   return (
@@ -23,7 +26,7 @@ function Home() {
             </div>
             <div className="md:w-1/2 p-4">
               <img
-                src="src/images/download.jpg"
+                src={logo1}
                 alt="Home Page Image"
                 className="w-full h-auto rounded-lg" />
             </div>
@@ -36,7 +39,7 @@ function Home() {
         <div className="flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 p-4">
             <img
-              src="src/images/playlist.png"
+              src={logo2}
               alt="Playlist"
               className="w-full h-auto rounded-lg" />
           </div>
@@ -69,7 +72,7 @@ function Home() {
             </div>
             <div className="md:w-1/2 p-4">
               <img
-                src="src/images/technology.png"
+                src={logo3}
                 alt="Home Page Image"
                 className="w-full h-auto rounded-lg" />
             </div>
