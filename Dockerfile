@@ -1,5 +1,8 @@
 # Frontend and Backend Dockerfile
-
+#docker build --target backend -t backend .
+#docker run -d -p 8000:8000 --name backend backend 
+#docker build --target frontend-build -t frontend .
+#docker run -d -p 3000:3000 --name frontend frontend
 # Frontend Build Stage
 FROM node:18 AS frontend-build
 WORKDIR /frontend
