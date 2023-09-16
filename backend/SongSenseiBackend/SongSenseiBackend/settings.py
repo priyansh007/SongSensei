@@ -16,7 +16,23 @@ import os
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
+from urllib.parse import urlparse, urlunparse
 
+def url_cleaner(original_url):
+    parsed_url = urlparse(original_url)
+
+    # Check if the path contains '/search'
+    if '/search' in parsed_url.path:
+        # Remove '/search' from the path
+        new_path = parsed_url.path.replace('/search', '')
+    
+        # Create a new URL with the modified path
+        new_url = urlunparse((parsed_url.scheme, parsed_url.netloc, new_path, parsed_url.params, parsed_url.query, parsed_url.fragment))
+    
+        return new_url
+    else:
+        return original_url
+    
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,6 +42,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+REDIRECT_URL= os.environ.get('REDIRECT_URI')
 CYANITE_API_KEY = os.environ.get('CYANITE_ACCESS_TOKEN')
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -134,13 +151,15 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_EXEMPT_URLS = ['https://c149-172-58-219-199.ngrok-free.app',
-                    'http://localhost:3000/search']
+                    'http://localhost:3000/search', 
+                    REDIRECT_URL]
 
 CORS_ALLOW_ALL_ORIGINS = True  # Allow requests from all origins (not recommended for production)
 CORS_ALLOW_CREDENTIALS = True  # Allow credentials (e.g., cookies, authorization headers) to be included in the requests
 
 CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000",  # Add your frontend's URL here
+    "http://localhost:3000",
+      url_cleaner(REDIRECT_URL)  # Add your frontend's URL here
     
 ]
 
